@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Details: Open Manhole - PathPulse AI</title>
+    <meta name="description" content="Detailed pedestrian hazard report for Open Manhole. Live AI risk score 92/100, critical severity, and verified civic telemetry.">
+
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet CSS for Dark Mini-Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Design System Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/report-details.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="report-details-body">
+
+    <!-- Sticky Top Navigation -->
+    <header class="rd-navbar">
+        <div class="rd-nav-inner">
+            <a href="index.html" class="rd-brand">
+                <div class="rd-brand-icon">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+                <span class="rd-brand-name">PathPulse AI</span>
+            </a>
+
+            <div class="rd-nav-actions">
+                <a href="dashboard.html" class="btn-rd btn-rd-secondary">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="report.html" class="btn-rd btn-rd-secondary">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Report Hazard</span>
+                </a>
+                <a href="map.html" class="btn-rd btn-rd-primary">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Safety Map</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="rd-main">
+
+        <!-- Top Toolbar / Breadcrumb & Action Navigation -->
+        <div class="rd-top-toolbar">
+            <div class="rd-toolbar-left">
+                <!-- Back to Reports Button -->
+                <a href="dashboard.html" class="btn-rd btn-rd-secondary" id="btn-back-reports">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back to Reports</span>
+                </a>
+
+                <div class="rd-breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fa-solid fa-chevron-right separator"></i>
+                    <a href="dashboard.html">Reports</a>
+                    <i class="fa-solid fa-chevron-right separator"></i>
+                    <span id="rd-report-id">RPT-1002</span>
+                </div>
+
+                <div class="rd-demo-badge" id="rd-connection-badge">
+                    <span class="pulse-dot"></span>
+                    <span id="rd-connection-text">Live Report &bull; Supabase Connected</span>
+                </div>
+            </div>
+
+            <div class="rd-toolbar-right">
+                <!-- View Safety Map Button -->
+                <a href="map.html?focus=RPT-1002" class="btn-rd btn-rd-primary" id="btn-view-safety-map">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>View Safety Map</span>
+                </a>
+
+                <!-- Share Link Button -->
+                <button type="button" class="btn-rd btn-rd-secondary" onclick="shareReportDetails()" title="Share Report Link">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2-Column Responsive Content Grid -->
+        <div class="rd-grid">
+
+            <!-- ============================================================ -->
+            <!-- LEFT COLUMN: Image Showcase, Hazard Overview, Location Map   -->
+            <!-- ============================================================ -->
+            <div class="rd-col-left">
+
+                <!-- 1. Large Hazard Image Showcase Card -->
+                <section class="rd-card rd-image-showcase" aria-labelledby="evidence-heading">
+                    <!-- Overlaid Badges -->
+                    <div class="rd-image-badges">
+                        <span class="rd-img-badge">
+                            <i class="fa-solid fa-camera"></i> Primary Evidence Photo
+                        </span>
+                        <span class="rd-img-badge">
+                            <i class="fa-solid fa-microchip"></i> AI Vision Audited
+                        </span>
+                    </div>
+
+                    <!-- Main Large Image Container -->
+                    <div class="rd-image-container" id="rd-image-container" title="Click to open full-size lightbox">
+                        <img 
+                            id="rd-main-image" 
+                            src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=1200" 
+                            alt="Open Manhole hazard photo" 
+                            class="rd-hazard-img"
+                        >
+
+                        <!-- Simulated AI Vision Bounding Box Overlay -->
+                        <div class="rd-ai-overlay-box" id="rd-ai-overlay">
+                            <div class="rd-ai-overlay-tag">
+                                <i class="fa-solid fa-crosshairs"></i>
+                                <span>[01] Open Stormwater Drain • 96.4%</span>
+                            </div>
+                        </div>
+
+                        <!-- Image Control Buttons Overlay -->
+                        <div class="rd-image-toolbar">
+                            <button type="button" class="rd-img-ctrl-btn" id="btn-toggle-ai-overlay" title="Toggle AI Vision Box">
+                                <i class="fa-solid fa-eye-slash"></i>
+                                <span>Hide AI Detection</span>
+                            </button>
+                            <button type="button" class="rd-img-ctrl-btn" onclick="document.getElementById('rd-image-container').click()" title="Zoom Image">
+                                <i class="fa-solid fa-expand"></i>
+                                <span>Expand</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Evidence Thumbnails -->
+                    <div class="rd-thumb-strip">
+                        <span class="rd-thumb-label">Evidence Views:</span>
+                        <div class="rd-thumb active" onclick="selectThumbnail('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=1200', this)">
+                            <img src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=200" alt="Angle 1">
+                        </div>
+                        <div class="rd-thumb" onclick="selectThumbnail('https://images.unsplash.com/photo-1518206411599-232a581de943?auto=format&fit=crop&q=80&w=1200', this)">
+                            <img src="https://images.unsplash.com/photo-1518206411599-232a581de943?auto=format&fit=crop&q=80&w=200" alt="Angle 2">
+                        </div>
+                        <div class="rd-thumb" onclick="selectThumbnail('https://images.unsplash.com/photo-1541888946425-d0fbb186c5f7?auto=format&fit=crop&q=80&w=1200', this)">
+                            <img src="https://images.unsplash.com/photo-1541888946425-d0fbb186c5f7?auto=format&fit=crop&q=80&w=200" alt="Angle 3">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Hazard Information & Core Metrics Card -->
+                <section class="rd-card" aria-labelledby="hazard-info-heading">
+                    <!-- Title & Header Info -->
+                    <div class="rd-info-header">
+                        <div class="rd-title-group">
+                            <div class="rd-report-id-row">
+                                <span class="rd-id-pill">
+                                    <i class="fa-solid fa-hashtag"></i>
+                                    <span id="rd-report-id-pill">RPT-1002</span>
+                                    <i class="fa-regular fa-copy rd-id-copy" id="btn-copy-id" title="Copy Report ID"></i>
+                                </span>
+                                <span class="rd-date-text" id="rd-report-date">Reported: Sep 19, 2026 • 08:15 AM</span>
+                            </div>
+
+                            <h1 class="rd-hazard-title" id="rd-hazard-title">Open Manhole</h1>
+
+                            <div class="rd-hazard-meta">
+                                <span class="rd-category-badge">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span id="rd-category-text">Drainage & Manhole</span>
+                                </span>
+                                <span><i class="fa-solid fa-user-shield" style="color:#10B981;"></i> Logged by Verified Pedestrian</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Core Metrics Row (Risk Score, Severity, Status, AI Confidence) -->
+                    <div class="rd-metrics-grid">
+                        <!-- Risk Score (92/100) -->
+                        <div class="rd-metric-box metric-risk-critical">
+                            <span class="rd-metric-label">Smart Risk Score</span>
+                            <div class="rd-metric-val" id="rd-risk-score">92/100</div>
+                            <span class="rd-metric-sub">Extreme Pedestrian Hazard</span>
+                        </div>
+
+                        <!-- Severity (Critical) -->
+                        <div class="rd-metric-box">
+                            <span class="rd-metric-label">Severity Level</span>
+                            <div style="margin-top: 4px;">
+                                <span class="severity-pill critical" id="rd-severity-badge">Critical</span>
+                            </div>
+                            <span class="rd-metric-sub">Urgent Civic Priority</span>
+                        </div>
+
+                        <!-- Status (Verified) -->
+                        <div class="rd-metric-box">
+                            <span class="rd-metric-label">Report Status</span>
+                            <div style="margin-top: 4px;">
+                                <span class="status-pill verified" id="rd-status-badge">Verified</span>
+                            </div>
+                            <span class="rd-metric-sub">Confirmed Incident</span>
+                        </div>
+
+                        <!-- AI Model Confidence -->
+                        <div class="rd-metric-box">
+                            <span class="rd-metric-label">AI Confidence</span>
+                            <div class="rd-metric-val" style="color: #60A5FA;" id="rd-ai-confidence">96.4%</div>
+                            <span class="rd-metric-sub">Obstacle Vision Edge v2.4</span>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Description -->
+                    <div class="rd-desc-block">
+                        <h2 class="rd-desc-heading">Hazard Description & Safety Assessment</h2>
+                        <p class="rd-desc-text" id="rd-description">
+                            Completely exposed stormwater drain opening directly on the pedestrian sidewalk corridor. Missing cast iron grate creates an immediate severe fall hazard, especially during low evening visibility. Pedestrians and visually impaired walkers are forced onto the active high-speed vehicular roadway.
+                        </p>
+
+                        <!-- Hazard Safety Tags -->
+                        <div class="rd-hazard-tags">
+                            <span class="rd-hazard-tag"><i class="fa-solid fa-person-falling"></i> Trip & Fall Hazard</span>
+                            <span class="rd-hazard-tag"><i class="fa-solid fa-moon"></i> High Night Risk</span>
+                            <span class="rd-hazard-tag"><i class="fa-solid fa-car-side"></i> Forces Traffic Spillover</span>
+                            <span class="rd-hazard-tag"><i class="fa-solid fa-wheelchair"></i> Barrier Inaccessible</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Location Details & Embedded Leaflet Mini-Map -->
+                <section class="rd-card rd-location-card" aria-labelledby="location-heading">
+                    <div class="rd-card-header">
+                        <h2 class="rd-card-title">
+                            <i class="fa-solid fa-map-pin"></i> Incident Location
+                        </h2>
+                        <a href="map.html?focus=RPT-1002" class="btn-rd btn-rd-secondary" style="font-size:0.8rem; padding: 4px 10px;">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Full Map
+                        </a>
+                    </div>
+
+                    <div class="rd-loc-meta">
+                        <div>
+                            <div class="rd-loc-address" id="rd-address">
+                                <i class="fa-solid fa-location-dot"></i> Lodhi Gardens West Gate, New Delhi
+                            </div>
+                            <div class="rd-loc-coords" id="rd-coords">
+                                28.5933° N, 77.2197° E
+                            </div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--rd-text-muted);">
+                            <i class="fa-solid fa-satellite"></i> GPS Precision: ±1.2m
+                        </div>
+                    </div>
+
+                    <!-- Embedded Dark Leaflet Map -->
+                    <div id="rd-mini-map" role="region" aria-label="Incident location mini-map"></div>
+                </section>
+
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- RIGHT COLUMN: 6-Stage Timeline & Demo Simulator Panel        -->
+            <!-- ============================================================ -->
+            <div class="rd-col-right">
+
+                <!-- 1. Report Lifecycle Timeline (6 Sequential Stages) -->
+                <section class="rd-card" aria-labelledby="timeline-heading">
+                    <div class="rd-card-header">
+                        <h2 class="rd-card-title" id="timeline-heading">
+                            <i class="fa-solid fa-timeline"></i> Report Timeline
+                        </h2>
+                        <span style="font-size: 0.75rem; color: var(--rd-text-muted); font-family: 'JetBrains Mono', monospace;">
+                            6-Stage Lifecycle
+                        </span>
+                    </div>
+
+                    <!-- Timeline Container populated dynamically by JS -->
+                    <div class="rd-timeline-wrap" id="rd-timeline-container">
+                        <!-- Populated by js/report-details.js -->
+                    </div>
+                </section>
+
+                <!-- 2. Interactive Demo Status Simulator Panel -->
+                <section class="rd-card rd-demo-simulator" aria-labelledby="simulator-heading">
+                    <div class="rd-card-header">
+                        <h2 class="rd-card-title" id="simulator-heading">
+                            <i class="fa-solid fa-sliders"></i> Demo Status Simulator
+                        </h2>
+                        <span class="rd-demo-badge" style="font-size: 0.7rem; padding: 2px 8px;">
+                            Interactive Prototype
+                        </span>
+                    </div>
+
+                    <p class="rd-simulator-desc">
+                        Simulate municipal resolution workflow transitions locally. Observe how completed stages are highlighted and subsequent stages remain pending.
+                    </p>
+
+                    <!-- Direct Stage Buttons -->
+                    <div class="rd-stage-selector-wrap">
+                        <span class="rd-stage-label">Select Lifecycle Stage:</span>
+                        <div class="rd-stage-buttons-grid" id="rd-stage-buttons-grid">
+                            <!-- Populated dynamically by js/report-details.js -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Simulator Actions -->
+                    <div class="rd-simulator-actions">
+                        <button type="button" class="btn-rd btn-rd-primary" onclick="advanceDemoStatus()" id="btn-advance-status">
+                            <i class="fa-solid fa-forward-step"></i>
+                            <span>Advance Status &rarr;</span>
+                        </button>
+                        <button type="button" class="btn-rd btn-rd-secondary" onclick="resetDemoStatus()" id="btn-reset-status">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+
+                    <!-- Explicit Demo Constraint Disclaimer -->
+                    <div class="rd-demo-disclaimer">
+                        <strong>Demo Constraint Note:</strong> This interactive prototype does not connect to Supabase. Real hazard resolution is never claimed without municipal engineer sign-off and on-site remediation.
+                    </div>
+                </section>
+
+                <!-- 3. Community Verification & Civic Ward Information -->
+                <section class="rd-card rd-civic-card" aria-labelledby="civic-heading">
+                    <div class="rd-card-header">
+                        <h2 class="rd-card-title" id="civic-heading">
+                            <i class="fa-solid fa-building-columns"></i> Civic Dispatch Info
+                        </h2>
+                    </div>
+
+                    <div class="rd-civic-stat-row">
+                        <span class="rd-civic-stat-label">
+                            <i class="fa-solid fa-users"></i> Community Signals:
+                        </span>
+                        <span class="rd-civic-stat-val">
+                            <span id="rd-upvotes-count">14</span> Walkers Verified
+                        </span>
+                    </div>
+
+                    <div class="rd-civic-stat-row">
+                        <span class="rd-civic-stat-label">
+                            <i class="fa-solid fa-map"></i> Assigned Ward:
+                        </span>
+                        <span class="rd-civic-stat-val">Central Ward 42</span>
+                    </div>
+
+                    <div class="rd-civic-stat-row">
+                        <span class="rd-civic-stat-label">
+                            <i class="fa-solid fa-stopwatch"></i> SLA Target:
+                        </span>
+                        <span class="rd-civic-stat-val" style="color: #F87171;">4 Hours (Critical)</span>
+                    </div>
+
+                    <button type="button" class="rd-upvote-btn" id="btn-upvote-hazard">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                        <span>Confirm & Upvote Hazard</span>
+                    </button>
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Fullscreen Lightbox Modal -->
+    <div class="rd-lightbox-modal" id="rd-lightbox-modal" role="dialog" aria-modal="true" aria-label="Hazard evidence preview">
+        <div class="rd-lightbox-content">
+            <button type="button" class="rd-lightbox-close" onclick="closeLightbox()" aria-label="Close preview">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="rd-lightbox-img" class="rd-lightbox-img" src="" alt="Enlarged hazard evidence">
+            <div class="rd-lightbox-caption" id="rd-lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Interactive Toast Notification -->
+    <div class="rd-toast" id="rd-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-bell rd-toast-icon"></i>
+        <div id="rd-toast-msg">Notification message</div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Supabase Client & App Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/report-details.js"></script>
+
+</body>
+</html>

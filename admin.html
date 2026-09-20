@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Demo Dashboard - PathPulse AI</title>
+    <meta name="description" content="PathPulse AI Municipal Operations and Hazard Management Portal. Frontend-only admin dashboard demo.">
+
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet CSS for Map Preview -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Design System Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-custom.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="admin-body">
+
+    <div class="admin-layout">
+
+        <!-- ============================================================ -->
+        <!-- 1. SIDEBAR                                                  -->
+        <!-- ============================================================ -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <a href="index.html" class="admin-brand">
+                    <div class="admin-brand-icon">
+                        <i class="fa-solid fa-route"></i>
+                    </div>
+                    <div class="admin-brand-text">
+                        <span>PathPulse AI</span>
+                        <small>Municipal Admin</small>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="admin-nav">
+                <div class="admin-nav-section-title">Operations Console</div>
+                <a href="#overview-section" class="admin-nav-link active">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#priority-queue-section" class="admin-nav-link">
+                    <i class="fa-solid fa-fire-flame-curved" style="color: #EF4444;"></i>
+                    <span>Priority Queue</span>
+                    <span class="admin-nav-badge">3</span>
+                </a>
+                <a href="#reports-table-section" class="admin-nav-link">
+                    <i class="fa-solid fa-table-list"></i>
+                    <span>Reports Table</span>
+                    <span class="admin-nav-badge" id="nav-pending-badge" style="background:rgba(245,158,11,0.2); color:#FBBF24; border-color:rgba(245,158,11,0.4);">4</span>
+                </a>
+
+                <div class="admin-nav-section-title">Intelligence</div>
+                <a href="#charts-section" class="admin-nav-link">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Analytics & Charts</span>
+                </a>
+                <a href="#map-section" class="admin-nav-link">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Map Preview</span>
+                </a>
+
+                <div class="admin-nav-section-title">Public Views</div>
+                <a href="dashboard.html" class="admin-nav-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span>User Dashboard</span>
+                </a>
+                <a href="map.html" class="admin-nav-link">
+                    <i class="fa-solid fa-map"></i>
+                    <span>Safety Map</span>
+                </a>
+                <a href="report.html" class="admin-nav-link">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Report Hazard</span>
+                </a>
+                <a href="report-details.html?id=RPT-1002" class="admin-nav-link">
+                    <i class="fa-solid fa-file-waveform"></i>
+                    <span>Report Details</span>
+                </a>
+            </nav>
+
+            <!-- Admin Profile Card -->
+            <div class="admin-sidebar-footer">
+                <div class="admin-user-avatar" id="admin-user-avatar-badge">AD</div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name" id="admin-user-name-display">Civic Operations</div>
+                    <div class="admin-user-role" id="admin-user-role-display">Verified Administrator</div>
+                </div>
+                <button type="button" onclick="handleAdminLogout()" title="Logout" style="background:none; border:none; color: #EF4444; font-size: 0.9rem; cursor:pointer;" aria-label="Logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ============================================================ -->
+        <!-- 2. MAIN CONTENT AREA                                        -->
+        <!-- ============================================================ -->
+        <main class="admin-main">
+
+            <!-- Top Navigation Bar -->
+            <header class="admin-topbar">
+                <div class="admin-topbar-left">
+                    <button type="button" class="mobile-menu-btn" id="btn-mobile-sidebar-toggle" aria-label="Toggle navigation menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <!-- Clearly labeled: Admin Operations Hub -->
+                    <div class="admin-demo-label" id="admin-status-badge">
+                        <span class="pulse-indicator"></span>
+                        <span>Admin Console</span>
+                        <span style="font-size:0.7rem; color:#10B981; font-weight:600;" id="admin-rls-badge">&bull; RLS Protected</span>
+                    </div>
+                </div>
+
+                <div class="admin-topbar-right">
+                    <button type="button" class="btn-adm btn-adm-secondary" onclick="refreshAdminData()" title="Reload from Supabase">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>Sync Supabase</span>
+                    </button>
+                    <a href="map.html" class="btn-adm btn-adm-primary">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span>Safety Map</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Content Body -->
+            <div class="admin-content" id="overview-section">
+
+                <!-- Administrative Notification Banner -->
+                <div class="admin-banner">
+                    <div class="admin-banner-text">
+                        <h1>Municipal Operations & Pedestrian Safety Hub</h1>
+                        <p>
+                            Review incoming AI-detected sidewalk hazards, audit verified pedestrian signals, and dispatch civic maintenance crews. All actions update the local data model in real time.
+                        </p>
+                    </div>
+                    <div class="admin-banner-actions">
+                        <span style="font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:#A1A1AA;">
+                            <i class="fa-solid fa-circle-nodes" style="color:#10B981;"></i> Local State Active
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ======================================================== -->
+                <!-- 3. STATISTICS (Total Reports, High Risk, Under Review, Resolved) -->
+                <!-- ======================================================== -->
+                <section class="admin-stats-grid" aria-labelledby="stats-heading">
+                    <h2 id="stats-heading" class="sr-only" style="display:none;">Operational Statistics</h2>
+
+                    <!-- Total Reports -->
+                    <div class="adm-stat-card stat-total">
+                        <div class="adm-stat-info">
+                            <span class="adm-stat-label">Total Reports</span>
+                            <div class="adm-stat-val" id="stat-total-reports">9</div>
+                            <span class="adm-stat-sub">Active Hazard Records</span>
+                        </div>
+                        <div class="adm-stat-icon">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                    </div>
+
+                    <!-- High Risk Reports -->
+                    <div class="adm-stat-card stat-highrisk">
+                        <div class="adm-stat-info">
+                            <span class="adm-stat-label">High Risk</span>
+                            <div class="adm-stat-val" id="stat-high-risk">5</div>
+                            <span class="adm-stat-sub">Critical & High Severity</span>
+                        </div>
+                        <div class="adm-stat-icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+
+                    <!-- Under Review Reports -->
+                    <div class="adm-stat-card stat-review">
+                        <div class="adm-stat-info">
+                            <span class="adm-stat-label">Under Review</span>
+                            <div class="adm-stat-val" id="stat-under-review">3</div>
+                            <span class="adm-stat-sub">Awaiting Verification</span>
+                        </div>
+                        <div class="adm-stat-icon">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                    </div>
+
+                    <!-- Resolved Reports -->
+                    <div class="adm-stat-card stat-resolved">
+                        <div class="adm-stat-info">
+                            <span class="adm-stat-label">Resolved</span>
+                            <div class="adm-stat-val" id="stat-resolved">2</div>
+                            <span class="adm-stat-sub">Remediated & Closed</span>
+                        </div>
+                        <div class="adm-stat-icon">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- 4. PRIORITY QUEUE                                       -->
+                <!-- Critical: Open Manhole (Risk: 94/100)                     -->
+                <!-- High: Broken Footpath (Risk: 82/100)                      -->
+                <!-- Medium: Garbage Blocking Path (Risk: 54/100)              -->
+                <!-- ======================================================== -->
+                <section class="admin-card" id="priority-queue-section" aria-labelledby="priority-heading">
+                    <div class="admin-card-header">
+                        <h2 class="admin-card-title" id="priority-heading">
+                            <i class="fa-solid fa-bolt-lightning" style="color:#EF4444;"></i>
+                            Priority Dispatch Queue
+                        </h2>
+                        <span style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:#A1A1AA;">
+                            Automated AI Risk Triage
+                        </span>
+                    </div>
+
+                    <!-- 3 Priority Cards Grid -->
+                    <div class="priority-queue-grid" id="priority-queue-container">
+                        <!-- Rendered by js/admin-dashboard.js -->
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- 5. CHARTS (Reports by category, severity, status)        -->
+                <!-- ======================================================== -->
+                <section class="admin-card" id="charts-section" aria-labelledby="charts-heading">
+                    <div class="admin-card-header">
+                        <h2 class="admin-card-title" id="charts-heading">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            Safety Intelligence Analytics
+                        </h2>
+                        <span style="font-size:0.75rem; color:var(--adm-text-muted); font-family:'JetBrains Mono', monospace;">
+                            Live Chart.js Visualizations
+                        </span>
+                    </div>
+
+                    <div class="admin-charts-grid">
+                        <!-- Chart 1: Reports by Category -->
+                        <div class="chart-card">
+                            <div class="chart-card-header">
+                                <h3><i class="fa-solid fa-layer-group"></i> Reports by Category</h3>
+                            </div>
+                            <div class="chart-canvas-box">
+                                <canvas id="chart-category"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 2: Reports by Severity -->
+                        <div class="chart-card">
+                            <div class="chart-card-header">
+                                <h3><i class="fa-solid fa-triangle-exclamation"></i> Reports by Severity</h3>
+                            </div>
+                            <div class="chart-canvas-box">
+                                <canvas id="chart-severity"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 3: Reports by Status -->
+                        <div class="chart-card">
+                            <div class="chart-card-header">
+                                <h3><i class="fa-solid fa-bars-progress"></i> Reports by Status</h3>
+                            </div>
+                            <div class="chart-canvas-box">
+                                <canvas id="chart-status"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- 6. MAP PREVIEW (Leaflet.js)                             -->
+                <!-- ======================================================== -->
+                <section class="admin-card map-preview-card" id="map-section" aria-labelledby="map-heading">
+                    <div class="admin-card-header">
+                        <h2 class="admin-card-title" id="map-heading">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            Geospatial Hazard Distribution Preview
+                        </h2>
+                        <a href="map.html" class="btn-adm btn-adm-secondary" style="font-size:0.78rem; padding:4px 10px;">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Full Screen Map
+                        </a>
+                    </div>
+
+                    <div id="admin-map-preview" role="region" aria-label="Hazard locations map preview"></div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- 7. REPORTS TABLE WITH 6 ACTIONS                         -->
+                <!-- Columns: ID, Hazard, Category, Severity, Risk Score, Status, Date, Action -->
+                <!-- Actions: View, Verify, Reject, Assign, Mark In Progress, Mark Resolved -->
+                <!-- ======================================================== -->
+                <section class="admin-card" id="reports-table-section" aria-labelledby="table-heading">
+                    <div class="admin-card-header">
+                        <h2 class="admin-card-title" id="table-heading">
+                            <i class="fa-solid fa-table-list"></i>
+                            Hazard Reports Master Table
+                        </h2>
+                        <span style="font-size:0.75rem; color:#A1A1AA; font-family:'JetBrains Mono', monospace;">
+                            Live Frontend Mutation Engine
+                        </span>
+                    </div>
+
+                    <!-- Table Toolbar (Search & Filter Pills) -->
+                    <div class="table-toolbar">
+                        <div class="table-search-box">
+                            <i class="fa-solid fa-search"></i>
+                            <input type="text" id="admin-table-search" placeholder="Search ID, hazard, or location..." aria-label="Search reports">
+                        </div>
+
+                        <div class="table-filter-pills">
+                            <button type="button" class="filter-pill active" data-filter="ALL">All Reports</button>
+                            <button type="button" class="filter-pill" data-filter="UNDER_REVIEW">Under Review</button>
+                            <button type="button" class="filter-pill" data-filter="VERIFIED">Verified</button>
+                            <button type="button" class="filter-pill" data-filter="ASSIGNED">Assigned</button>
+                            <button type="button" class="filter-pill" data-filter="IN_PROGRESS">In Progress</button>
+                            <button type="button" class="filter-pill" data-filter="RESOLVED">Resolved</button>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Table -->
+                    <div class="adm-table-wrap">
+                        <table class="adm-table" aria-label="Reports database table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Hazard</th>
+                                    <th>Category</th>
+                                    <th>Severity</th>
+                                    <th>Risk Score</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-table-body">
+                                <!-- Populated dynamically by js/admin-dashboard.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- REPORT INSPECTION MODAL (For 'View' Action)                  -->
+    <!-- ============================================================ -->
+    <div class="admin-modal" id="admin-inspection-modal" role="dialog" aria-modal="true" aria-labelledby="modal-report-title">
+        <div class="admin-modal-card">
+            <div class="admin-modal-header">
+                <h3 class="admin-modal-title">
+                    <i class="fa-solid fa-file-lines" style="color: #F59E0B;"></i>
+                    <span id="modal-report-title">Open Manhole</span>
+                </h3>
+                <button type="button" class="admin-modal-close" onclick="closeAdminModal()" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="admin-modal-body">
+                <img id="modal-report-img" class="modal-img-preview" src="" alt="Hazard photographic evidence">
+
+                <div class="modal-grid-2col">
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Report ID</div>
+                        <div class="modal-info-val" id="modal-report-id" style="font-family:'JetBrains Mono', monospace; color:#FBBF24;">RPT-1002</div>
+                    </div>
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Category</div>
+                        <div class="modal-info-val" id="modal-report-cat">Drainage & Manhole</div>
+                    </div>
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Severity Level</div>
+                        <div class="modal-info-val">
+                            <span id="modal-report-sev" class="badge-sev critical">Critical</span>
+                        </div>
+                    </div>
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Smart Risk Score</div>
+                        <div class="modal-info-val" id="modal-report-risk" style="font-family:'JetBrains Mono', monospace; color:#EF4444;">94/100</div>
+                    </div>
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Current Status</div>
+                        <div class="modal-info-val">
+                            <span id="modal-report-status" class="badge-status verified">Verified</span>
+                        </div>
+                    </div>
+                    <div class="modal-info-item">
+                        <div class="modal-info-label">Assigned Squad</div>
+                        <div class="modal-info-val" id="modal-report-assigned">Central Ward 42 Maintenance Squad</div>
+                    </div>
+                </div>
+
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Incident Location</div>
+                    <div class="modal-info-val" id="modal-report-loc"><i class="fa-solid fa-location-dot" style="color:#EF4444;"></i> Lodhi Gardens West Gate, New Delhi</div>
+                </div>
+
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Field Description</div>
+                    <p id="modal-report-desc" style="margin:0; font-size:0.85rem; color:#E4E4E7; line-height:1.5;">
+                        Completely exposed stormwater drain opening directly on the pedestrian corridor.
+                    </p>
+                </div>
+
+                <!-- Admin Action & Notes Logging (Persists to report_updates and notifies user) -->
+                <div class="modal-info-item" style="margin-top: 14px;">
+                    <div class="modal-info-label">Admin Notes (Saved to report_updates log)</div>
+                    <textarea 
+                        id="modal-admin-note" 
+                        placeholder="Add inspection notes, dispatch crew instructions, or remediation sign-off..." 
+                        style="width: 100%; min-height: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--adm-border); border-radius: 8px; color: #FFF; padding: 8px 10px; font-size: 0.82rem; resize: vertical; box-sizing: border-box; font-family: inherit;"
+                    ></textarea>
+                </div>
+
+                <div class="modal-info-item" style="margin-top: 14px;">
+                    <div class="modal-info-label">Update Report Status (Dispatches notifications & updates timeline)</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+                        <button type="button" class="btn-adm btn-adm-secondary btn-sm" onclick="handleModalAction('verified')" style="color: #10B981; border-color: rgba(16, 185, 129, 0.4);">
+                            <i class="fa-solid fa-circle-check"></i> Verify
+                        </button>
+                        <button type="button" class="btn-adm btn-adm-secondary btn-sm" onclick="handleModalAction('assigned')" style="color: #38BDF8; border-color: rgba(56, 189, 248, 0.4);">
+                            <i class="fa-solid fa-clipboard-user"></i> Assign
+                        </button>
+                        <button type="button" class="btn-adm btn-adm-secondary btn-sm" onclick="handleModalAction('in_progress')" style="color: #F59E0B; border-color: rgba(245, 158, 11, 0.4);">
+                            <i class="fa-solid fa-person-digging"></i> In Progress
+                        </button>
+                        <button type="button" class="btn-adm btn-adm-secondary btn-sm" onclick="handleModalAction('resolved')" style="color: #34D399; border-color: rgba(52, 211, 153, 0.4);">
+                            <i class="fa-solid fa-shield-check"></i> Mark Resolved
+                        </button>
+                        <button type="button" class="btn-adm btn-adm-secondary btn-sm" onclick="handleModalAction('rejected')" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.4);">
+                            <i class="fa-solid fa-ban"></i> Reject
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-modal-footer">
+                <button type="button" class="btn-adm btn-adm-secondary" onclick="closeAdminModal()">Close</button>
+                <a href="report-details.html?id=RPT-1002" id="modal-full-details-link" class="btn-adm btn-adm-primary">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Full Report Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ACCESS DENIED OVERLAY (Shown When User Lacks Admin Role)     -->
+    <!-- ============================================================ -->
+    <div class="admin-modal" id="admin-access-denied-modal" role="dialog" aria-modal="true">
+        <div class="admin-modal-card" style="max-width: 480px; text-align: center; padding: 36px 26px;">
+            <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px auto; font-size: 2rem; color: #EF4444;">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">
+                Administrator Access Required
+            </h3>
+            <p style="color: #A1A1AA; font-size: 0.92rem; line-height: 1.5; margin-bottom: 24px;">
+                Only authenticated civic operators with the <strong>admin</strong> role can access this console. Database Row Level Security protects all sensitive civic ticket operations.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a href="login.html" class="btn-adm btn-adm-primary" style="text-decoration: none; padding: 10px 18px;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In as Admin
+                </a>
+                <a href="dashboard.html" class="btn-adm btn-adm-secondary" style="text-decoration: none; padding: 10px 18px;">
+                    <i class="fa-solid fa-gauge-high"></i> Citizen Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TOAST NOTIFICATION COMPONENT                                 -->
+    <!-- ============================================================ -->
+    <div class="admin-toast" id="admin-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-bell admin-toast-icon"></i>
+        <div id="admin-toast-msg">Operation completed successfully.</div>
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet JS CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Supabase Client & Admin Dashboard Logic -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+
+</body>
+</html>

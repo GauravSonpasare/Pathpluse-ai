@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PathPulse AI - Don't just find the shortest path. Find the safer path.</title>
+    
+    <!-- Meta tags for SEO & Social Sharing -->
+    <meta name="description" content="PathPulse AI turns everyday observations into actionable pedestrian safety intelligence. Report hazards, track resolutions, and navigate safer walking routes.">
+    
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="theme-dark">
+
+    <!-- ==========================================================================
+         Navigation Bar
+         ========================================================================== -->
+    <header class="landing-nav" id="main-nav">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand-logo" id="logo-link">
+                <div class="brand-icon-wrap">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+                <span>PathPulse AI</span>
+                <span class="brand-badge">BETA</span>
+            </a>
+
+            <!-- Desktop & Mobile Nav Links -->
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="index.html" class="nav-link-item active">Home</a></li>
+                <li><a href="#how-it-works" class="nav-link-item">How It Works</a></li>
+                <li><a href="#features" class="nav-link-item">Features</a></li>
+                <li><a href="#sample-report" class="nav-link-item">Example Report</a></li>
+                <li><a href="#how-it-helps" class="nav-link-item">How It Helps</a></li>
+                <li><a href="map.html" class="nav-link-item"><i class="fa-solid fa-map-pin text-warning" style="margin-right: 4px;"></i> Safety Map</a></li>
+                <li><a href="dashboard.html" class="nav-link-item">Dashboard</a></li>
+            </ul>
+
+            <!-- CTA & Mobile Toggle -->
+            <div class="nav-cta-group">
+                <a href="login.html" class="btn btn-secondary btn-sm" id="nav-login-btn">Login</a>
+                <a href="report.html" class="btn btn-primary btn-sm" id="nav-report-btn">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Report Hazard</span>
+                </a>
+            </div>
+
+            <button class="mobile-toggle-btn" id="mobile-toggle-btn" aria-label="Toggle navigation menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- ==========================================================================
+             Hero Section
+             ========================================================================== -->
+        <section class="hero-section" id="hero">
+            <div class="hero-backdrop-glow"></div>
+            <div class="container hero-grid">
+                
+                <!-- Left: Headline & Actions -->
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="badge-dot"></span>
+                        <span>AI-POWERED PEDESTRIAN SAFETY</span>
+                    </div>
+
+                    <h1 class="hero-heading">
+                        Don't just find the shortest path.
+                        <span class="gradient-text-accent">Find the safer path.</span>
+                    </h1>
+
+                    <p class="hero-subtitle">
+                        Turn everyday observations into actionable pedestrian safety intelligence.
+                    </p>
+
+                    <div class="hero-cta-btns">
+                        <a href="report.html" class="btn-hero-primary" id="hero-report-btn">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Report a Hazard</span>
+                        </a>
+                        <a href="map.html" class="btn-hero-secondary" id="hero-map-btn">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>Explore Safety Map</span>
+                        </a>
+                    </div>
+
+                    <!-- Subtle credibility traits (no fake numbers) -->
+                    <div class="hero-micro-traits">
+                        <div class="hero-micro-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Crowdsourced & Verified</span>
+                        </div>
+                        <div class="hero-micro-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Automated Risk Scoring</span>
+                        </div>
+                        <div class="hero-micro-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Zero Hardware Required</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Attractive Dark City / Pedestrian Safety Visual -->
+                <div class="hero-visual-container">
+                    <div class="hero-visual-card" id="city-visual-card">
+                        
+                        <!-- City Grid Backdrop & Radar -->
+                        <div class="city-grid-canvas"></div>
+                        <div class="city-radar-sweep"></div>
+
+                        <!-- Stylized City Blocks with Glow Windows -->
+                        <div class="city-block block-1">
+                            <div class="block-label">SECTOR A-1</div>
+                        </div>
+                        <div class="city-block block-2">
+                            <div class="block-label">METRO HUB</div>
+                        </div>
+                        <div class="city-block block-3">
+                            <div class="block-label">CIVIC WARD 4</div>
+                        </div>
+                        <div class="city-block block-4">
+                            <div class="block-label">ZONE B-3</div>
+                        </div>
+
+                        <!-- Crosswalk Striping on City Grid -->
+                        <div class="crosswalk crosswalk-h" style="top: 170px; left: 140px;"></div>
+                        <div class="crosswalk crosswalk-h" style="bottom: 160px; right: 180px;"></div>
+
+                        <!-- Street Paths SVG Layout -->
+                        <svg class="city-streets-svg" viewBox="0 0 500 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background Street Grid Arterials -->
+                            <line x1="20" y1="240" x2="480" y2="240" stroke="rgba(255,255,255,0.06)" stroke-width="28" stroke-linecap="round"/>
+                            <line x1="240" y1="20" x2="240" y2="460" stroke="rgba(255,255,255,0.06)" stroke-width="28" stroke-linecap="round"/>
+
+                            <!-- Risky Path (Direct through hazards) -->
+                            <path d="M 60 410 L 220 250 L 290 120 L 430 70" class="risky-route-line" />
+
+                            <!-- Safe Recommended Route (Rerouted around hazards) -->
+                            <path d="M 60 410 L 140 410 L 140 280 L 360 280 L 360 120 L 430 70" class="safe-route-line" />
+
+                            <!-- Start and Destination Pins -->
+                            <circle cx="60" cy="410" r="7" fill="#3B82F6" stroke="#FFFFFF" stroke-width="2"/>
+                            <circle cx="430" cy="70" r="7" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
+                        </svg>
+
+                        <!-- Floating Hazard Marker 1: Open Manhole -->
+                        <div class="hazard-marker marker-manhole" title="Click to view details">
+                            <div class="marker-ping-container ping-danger">
+                                <div class="ping-ring"></div>
+                                <div class="ping-dot"></div>
+                            </div>
+                            <div class="marker-card marker-danger-card">
+                                <div class="marker-icon-box box-danger">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                </div>
+                                <div>
+                                    <div class="marker-title">Open Manhole</div>
+                                    <div class="marker-meta">Risk: 92/100 · Critical</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Hazard Marker 2: Broken Footpath -->
+                        <div class="hazard-marker marker-footpath" title="Click to view details">
+                            <div class="marker-ping-container ping-warning">
+                                <div class="ping-ring"></div>
+                                <div class="ping-dot"></div>
+                            </div>
+                            <div class="marker-card marker-warning-card">
+                                <div class="marker-icon-box box-warning">
+                                    <i class="fa-solid fa-road-barrier"></i>
+                                </div>
+                                <div>
+                                    <div class="marker-title">Broken Footpath</div>
+                                    <div class="marker-meta">Risk: 68/100 · High</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Hazard Marker 3: High Risk -->
+                        <div class="hazard-marker marker-highrisk" title="Click to view details">
+                            <div class="marker-ping-container ping-highrisk">
+                                <div class="ping-ring"></div>
+                                <div class="ping-dot"></div>
+                            </div>
+                            <div class="marker-card marker-highrisk-card">
+                                <div class="marker-icon-box box-highrisk">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <div>
+                                    <div class="marker-title">High Risk</div>
+                                    <div class="marker-meta">Poor Lighting & Crosswalk Hazard</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Safe Path Tag at bottom of visual -->
+                        <div class="safe-path-pill">
+                            <i class="fa-solid fa-shield-check"></i>
+                            <span>PathPulse Safe Path · Active Rerouting</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             1. How PathPulse Works Section
+             ========================================================================== -->
+        <section class="section-py" id="how-it-works">
+            <div class="container">
+                <div class="section-header-center">
+                    <span class="section-tag">Intelligent Workflow</span>
+                    <h2 class="section-title">How PathPulse Works</h2>
+                    <p class="section-desc">
+                        A seamless four-step pipeline transforming fragmented pedestrian concerns into verified civic action and safer walking routes.
+                    </p>
+                </div>
+
+                <div class="workflow-grid">
+                    <!-- Step 1: Capture -->
+                    <div class="workflow-card">
+                        <div class="workflow-step-num">01</div>
+                        <div class="workflow-icon-wrap">
+                            <i class="fa-solid fa-camera-retro"></i>
+                        </div>
+                        <h3 class="workflow-title">Capture</h3>
+                        <p class="workflow-text">
+                            Snap a quick photo, drop a GPS pin, or dictate notes on broken sidewalks, missing covers, or unlit walkways while walking.
+                        </p>
+                    </div>
+
+                    <!-- Step 2: Analyze -->
+                    <div class="workflow-card">
+                        <div class="workflow-step-num">02</div>
+                        <div class="workflow-icon-wrap">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3 class="workflow-title">Analyze</h3>
+                        <p class="workflow-text">
+                            Edge AI scans visual evidence, classifies hazard categories, and estimates risk impact based on pedestrian vulnerability and environment.
+                        </p>
+                    </div>
+
+                    <!-- Step 3: Prioritize -->
+                    <div class="workflow-card">
+                        <div class="workflow-step-num">03</div>
+                        <div class="workflow-icon-wrap">
+                            <i class="fa-solid fa-arrow-up-wide-short"></i>
+                        </div>
+                        <h3 class="workflow-title">Prioritize</h3>
+                        <p class="workflow-text">
+                            Our multi-factor scoring model ranks issues by urgency from 0–100, highlighting lethal choke points before accidents happen.
+                        </p>
+                    </div>
+
+                    <!-- Step 4: Resolve -->
+                    <div class="workflow-card">
+                        <div class="workflow-step-num">04</div>
+                        <div class="workflow-icon-wrap">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <h3 class="workflow-title">Resolve</h3>
+                        <p class="workflow-text">
+                            Municipal teams and civic agencies get structured repair tickets, and commuters receive real-time notifications once verified safe.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             2. Core Features Section
+             ========================================================================== -->
+        <section class="section-py" id="features" style="background: rgba(14, 14, 22, 0.4);">
+            <div class="container">
+                <div class="section-header-center">
+                    <span class="section-tag">Platform Capabilities</span>
+                    <h2 class="section-title">Core Features</h2>
+                    <p class="section-desc">
+                        Built from the ground up for pedestrians, urban planners, and civic maintenance teams seeking safer streets.
+                    </p>
+                </div>
+
+                <div class="features-grid">
+                    <!-- Feature 1: AI Hazard Detection -->
+                    <div class="feature-box">
+                        <div class="feature-top">
+                            <div class="feature-icon-bubble bubble-ai">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <span class="feature-tag">COMPUTER VISION</span>
+                        </div>
+                        <h3 class="feature-title">AI Hazard Detection</h3>
+                        <p class="feature-desc">
+                            Automated image recognition trained on urban infrastructure flags missing manhole lids, cracked paving slabs, jutting rebar, and water accumulation instantly upon upload.
+                        </p>
+                        <div class="feature-pills">
+                            <span class="feature-subpill">Object Detection</span>
+                            <span class="feature-subpill">Confidence Metrics</span>
+                            <span class="feature-subpill">Instant Categorization</span>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2: Smart Risk Scoring -->
+                    <div class="feature-box">
+                        <div class="feature-top">
+                            <div class="feature-icon-bubble bubble-scoring">
+                                <i class="fa-solid fa-gauge-high"></i>
+                            </div>
+                            <span class="feature-tag">ALGORITHMIC RANKING</span>
+                        </div>
+                        <h3 class="feature-title">Smart Risk Scoring</h3>
+                        <p class="feature-desc">
+                            A dynamic index weighing severity, foot-traffic density, night visibility, and accessibility disruption to generate an objective 0–100 risk grade for every reported incident.
+                        </p>
+                        <div class="feature-pills">
+                            <span class="feature-subpill">0-100 Score Index</span>
+                            <span class="feature-subpill">Vulnerability Multiplier</span>
+                            <span class="feature-subpill">Severity Matrix</span>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3: Safety Map -->
+                    <div class="feature-box">
+                        <div class="feature-top">
+                            <div class="feature-icon-bubble bubble-map">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <span class="feature-tag">GEOSPATIAL INTELLIGENCE</span>
+                        </div>
+                        <h3 class="feature-title">Safety Map</h3>
+                        <p class="feature-desc">
+                            Interactive real-time map displaying confirmed hazard heatmaps, active repairs, and safest pedestrian corridors. Filter by severity or navigate away from dangerous blocks.
+                        </p>
+                        <div class="feature-pills">
+                            <span class="feature-subpill">Live Heatmaps</span>
+                            <span class="feature-subpill">GIS Geocoding</span>
+                            <span class="feature-subpill">Safe Walk Corridors</span>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4: Community Reporting -->
+                    <div class="feature-box">
+                        <div class="feature-top">
+                            <div class="feature-icon-bubble bubble-community">
+                                <i class="fa-solid fa-users-viewfinder"></i>
+                            </div>
+                            <span class="feature-tag">CROWD VALIDATION</span>
+                        </div>
+                        <h3 class="feature-title">Community Reporting</h3>
+                        <p class="feature-desc">
+                            Empower local neighborhood walkers to validate ongoing issues, submit progress updates, and confirm completed civic repairs with photo evidence and reputation upvotes.
+                        </p>
+                        <div class="feature-pills">
+                            <span class="feature-subpill">Upvote Verification</span>
+                            <span class="feature-subpill">Audit Trail</span>
+                            <span class="feature-subpill">Public Transparency</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             3. Example Report Section
+             ========================================================================== -->
+        <section class="section-py" id="sample-report">
+            <div class="container">
+                <div class="section-header-center">
+                    <span class="section-tag">Audit Telemetry</span>
+                    <h2 class="section-title">Example Report</h2>
+                    <p class="section-desc">
+                        Inspect how raw citizen submissions convert into high-fidelity, verified safety reports.
+                    </p>
+                </div>
+
+                <div class="report-showcase-container">
+                    <!-- Left: Sample Report Card -->
+                    <div class="report-showcase-card" id="showcase-report-card">
+                        
+                        <!-- Header / Status / Severity -->
+                        <div class="report-card-header">
+                            <div class="report-id-group">
+                                <i class="fa-solid fa-fingerprint text-warning"></i>
+                                <span class="report-id-text">RPT-1002</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <span class="status-badge-verified">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    Status: Verified
+                                </span>
+                                <span class="severity-pill-critical">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Severity: Critical
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Report Headline -->
+                        <div class="report-headline">
+                            <div>
+                                <h4 class="report-main-title">Open Manhole</h4>
+                                <div class="report-location-sub">
+                                    <i class="fa-solid fa-location-dot text-danger"></i>
+                                    <span>Lodhi Gardens West Gate, New Delhi</span>
+                                </div>
+                            </div>
+                            <div class="risk-score-container">
+                                <div class="risk-score-num">92<span class="risk-score-denom">/100</span></div>
+                                <div class="risk-score-label">Risk Score</div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Viewport with Simulated AI Bounding Box -->
+                        <div class="report-visual-preview">
+                            <div class="simulated-ground"></div>
+                            
+                            <!-- Visual manhole representation -->
+                            <div class="simulated-manhole"></div>
+                            
+                            <!-- AI Bounding Box overlay -->
+                            <div class="ai-bounding-box">
+                                <div class="ai-tag-label">
+                                    <i class="fa-solid fa-microchip"></i> OPEN MANHOLE (95% CONF)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Structured Data Breakdown -->
+                        <div class="report-data-grid">
+                            <div class="report-data-item">
+                                <div class="data-item-title">Hazard Category</div>
+                                <div class="data-item-val text-danger">Open Manhole</div>
+                            </div>
+                            <div class="report-data-item">
+                                <div class="data-item-title">Fall Exposure</div>
+                                <div class="data-item-val text-warning">Deep Storm Drain</div>
+                            </div>
+                            <div class="report-data-item">
+                                <div class="data-item-title">Pedestrian Traffic</div>
+                                <div class="data-item-val">High (Near Transit)</div>
+                            </div>
+                            <div class="report-data-item">
+                                <div class="data-item-title">Date & Time</div>
+                                <div class="data-item-val font-mono text-sm">Today, 08:15 AM</div>
+                            </div>
+                            <div class="report-data-item">
+                                <div class="data-item-title">Community Upvotes</div>
+                                <div class="data-item-val text-success"><i class="fa-solid fa-thumbs-up"></i> 14 Walkers</div>
+                            </div>
+                            <div class="report-data-item">
+                                <div class="data-item-title">Dispatch Status</div>
+                                <div class="data-item-val text-info">Assigned to Ward Crew</div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="report-footer-actions">
+                            <span class="text-muted text-sm font-mono">GPS: 28.5933° N, 77.2197° E</span>
+                            <a href="map.html" class="report-action-btn">
+                                <span>Inspect on Map</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Explanation of Value -->
+                    <div class="showcase-explanation">
+                        <h3>Transparent, Actionable Data For Safer Cities</h3>
+                        <p>
+                            Vague complaints like <em>"the street is broken"</em> sit in municipal backlogs for months. PathPulse AI turns every report into a verified engineering ticket complete with severity scores, image classification, and precise coordinates.
+                        </p>
+
+                        <ul class="showcase-checklist">
+                            <li class="showcase-check-item">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <div>
+                                    <strong class="text-white">Eliminates Subjective Bias:</strong>
+                                    Algorithmic scoring ranks true hazards over squeaky-wheel complaints.
+                                </div>
+                            </li>
+                            <li class="showcase-check-item">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <div>
+                                    <strong class="text-white">Instant Community Alerts:</strong>
+                                    Pedestrians navigating nearby routes receive proactive hazard warnings.
+                                </div>
+                            </li>
+                            <li class="showcase-check-item">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <div>
+                                    <strong class="text-white">Public Verification:</strong>
+                                    Issues cannot be quietly marked closed until confirmed resolved on the ground.
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div>
+                            <a href="report.html" class="btn btn-primary">
+                                <i class="fa-solid fa-camera"></i>
+                                <span>Submit a Sample Report</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             4. How It Helps Section
+             ========================================================================== -->
+        <section class="section-py" id="how-it-helps" style="background: rgba(14, 14, 22, 0.4);">
+            <div class="container">
+                <div class="section-header-center">
+                    <span class="section-tag">Community Safety Impact</span>
+                    <h2 class="section-title">How It Helps</h2>
+                    <p class="section-desc">
+                        Empowering neighborhoods to identify, prioritize, and eliminate pedestrian hazards together.
+                    </p>
+                </div>
+
+                <div class="impact-grid">
+                    <!-- Impact 1: Proactive Pedestrian Protection -->
+                    <div class="impact-card">
+                        <div class="impact-icon-box">
+                            <i class="fa-solid fa-person-walking"></i>
+                        </div>
+                        <h3 class="impact-title">Safer Daily Commutes</h3>
+                        <p class="impact-text">
+                            Pedestrians receive proactive hazard awareness for poorly lit corridors, missing grates, and tripping risks before stepping into danger, keeping evening walkers and school children safe.
+                        </p>
+                    </div>
+
+                    <!-- Impact 2: Targeted Civic Allocation -->
+                    <div class="impact-card">
+                        <div class="impact-icon-box">
+                            <i class="fa-solid fa-city"></i>
+                        </div>
+                        <h3 class="impact-title">Evidence-Based Repair</h3>
+                        <p class="impact-text">
+                            City workers and contractors don't have to guess where repairs are needed most. The 0–100 risk score establishes a clear, data-driven queue so life-threatening issues get fixed first.
+                        </p>
+                    </div>
+
+                    <!-- Impact 3: Universal Accessibility -->
+                    <div class="impact-card">
+                        <div class="impact-icon-box">
+                            <i class="fa-solid fa-wheelchair"></i>
+                        </div>
+                        <h3 class="impact-title">Accessibility for All</h3>
+                        <p class="impact-text">
+                            Broken ramps, cracked curbs, and sidewalk obstructions disproportionately affect seniors, parents with strollers, and wheelchair users. PathPulse flags barrier-free alternative paths.
+                        </p>
+                    </div>
+
+                    <!-- Impact 4: Accountability -->
+                    <div class="impact-card">
+                        <div class="impact-icon-box">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <h3 class="impact-title">Civic Accountability</h3>
+                        <p class="impact-text">
+                            Public audit histories track timestamps from initial photo submission to repair dispatch, fostering transparency and trust between citizens and local governance.
+                        </p>
+                    </div>
+
+                    <!-- Impact 5: Hotspot Discovery -->
+                    <div class="impact-card">
+                        <div class="impact-icon-box">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h3 class="impact-title">Chronic Hotspot Detection</h3>
+                        <p class="impact-text">
+                            By aggregating recurring micro-reports over time, urban planners can identify structurally degraded corridors requiring long-term capital rebuilding instead of quick patches.
+                        </p>
+                    </div>
+
+                    <!-- Impact 6: Community Solidarity -->
+                    <div class="impact-card">
+                        <div class="impact-icon-box">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <h3 class="impact-title">Neighborhood Empowerment</h3>
+                        <p class="impact-text">
+                            Transform passive frustration with broken sidewalks into active, collaborative civic stewardship. A five-second photo can prevent someone else's emergency room visit.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             5. Final CTA Section
+             ========================================================================== -->
+        <section class="section-py" id="final-cta">
+            <div class="container">
+                <div class="final-cta-wrap">
+                    <h2 class="cta-heading">Help make every path safer.</h2>
+                    <p class="cta-subheading">
+                        Spot a dangerous sidewalk, unlit corner, or open drain? Submit an observation in seconds and help your community find the safer path forward.
+                    </p>
+
+                    <div class="cta-button-row">
+                        <a href="report.html" class="btn-hero-primary" id="cta-report-btn">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Report a Hazard</span>
+                        </a>
+                        <a href="map.html" class="btn-hero-secondary" id="cta-map-btn">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>Explore Safety Map</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==========================================================================
+         Footer
+         ========================================================================== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid-top">
+                
+                <div class="footer-brand-col">
+                    <a href="index.html" class="brand-logo mb-2">
+                        <div class="brand-icon-wrap" style="width: 32px; height: 32px; font-size: 0.95rem;">
+                            <i class="fa-solid fa-route"></i>
+                        </div>
+                        <span>PathPulse AI</span>
+                    </a>
+                    <p>
+                        Turning everyday observations into actionable pedestrian safety intelligence. Safer sidewalks, brighter walkways, and data-driven civic prioritization.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="footer-col-title">Navigation</h5>
+                    <ul class="footer-link-list">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="report.html">Report a Hazard</a></li>
+                        <li><a href="map.html">Live Safety Map</a></li>
+                        <li><a href="dashboard.html">Citizen Dashboard</a></li>
+                        <li><a href="admin.html">Civic Admin Portal</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="footer-col-title">Platform</h5>
+                    <ul class="footer-link-list">
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#features">AI Scoring Model</a></li>
+                        <li><a href="#sample-report">Sample Inspection</a></li>
+                        <li><a href="#how-it-helps">Community Impact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="footer-col-title">Access</h5>
+                    <ul class="footer-link-list">
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="register.html">Create Account</a></li>
+                        <li><a href="profile.html">User Profile</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom-row">
+                <div>&copy; 2026 PathPulse AI. Built for pedestrian safety.</div>
+                <div style="display: flex; gap: 16px;">
+                    <span class="text-dim">Hackathon Edition</span>
+                    <span class="text-dim">·</span>
+                    <span class="text-dim">Local Demonstration</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script>
+        // Interactive Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('mobile-toggle-btn');
+            const navMenu = document.getElementById('nav-menu');
+            if (toggleBtn && navMenu) {
+                toggleBtn.addEventListener('click', () => {
+                    navMenu.classList.toggle('open');
+                });
+            }
+
+            // Navbar scroll background change
+            const nav = document.getElementById('main-nav');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 40) {
+                    nav.style.background = 'rgba(8, 8, 13, 0.96)';
+                    nav.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                } else {
+                    nav.style.background = 'rgba(8, 8, 13, 0.82)';
+                    nav.style.borderColor = 'rgba(255, 255, 255, 0.07)';
+                }
+            });
+
+            // Smooth scrolling for in-page anchors
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId !== '#') {
+                        const targetEl = document.querySelector(targetId);
+                        if (targetEl) {
+                            e.preventDefault();
+                            if (navMenu && navMenu.classList.contains('open')) {
+                                navMenu.classList.remove('open');
+                            }
+                            targetEl.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Subtle interactive 3D card tilt for the dark city visual
+            const card = document.getElementById('city-visual-card');
+            if (card && window.innerWidth > 992) {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -5;
+                    const rotateY = ((x - centerX) / centerX) * 5;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

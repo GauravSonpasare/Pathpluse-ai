@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Safety Map - PathPulse AI</title>
+    <meta name="description" content="Interactive pedestrian hazard and safety intelligence map. Explore verified danger zones, walking risk scores, and safer route corridors.">
+    
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="map-page-body">
+
+    <!-- Top Minimalist Navbar -->
+    <header class="map-navbar">
+        <a href="index.html" class="map-nav-brand">
+            <div class="map-nav-icon">
+                <i class="fa-solid fa-route"></i>
+            </div>
+            <span>PathPulse AI</span>
+        </a>
+
+        <nav class="map-nav-links">
+            <a href="index.html" class="map-nav-link-btn">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="dashboard.html" class="map-nav-link-btn">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="report.html" class="map-nav-link-btn" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.35);">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Report Hazard</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Toolbar: Filters & Location Search -->
+    <div class="map-toolbar">
+        
+        <!-- Filters Group (All, Critical, High, Medium, Low, Resolved) -->
+        <div class="toolbar-filters-group" role="tablist" aria-label="Hazard Severity Filters">
+            <button type="button" class="toolbar-filter-btn active" data-filter="All">
+                <span class="filter-dot dot-all"></span>
+                <span>All</span>
+            </button>
+            <button type="button" class="toolbar-filter-btn" data-filter="Critical">
+                <span class="filter-dot dot-critical"></span>
+                <span>Critical</span>
+            </button>
+            <button type="button" class="toolbar-filter-btn" data-filter="High">
+                <span class="filter-dot dot-high"></span>
+                <span>High</span>
+            </button>
+            <button type="button" class="toolbar-filter-btn" data-filter="Medium">
+                <span class="filter-dot dot-medium"></span>
+                <span>Medium</span>
+            </button>
+            <button type="button" class="toolbar-filter-btn" data-filter="Low">
+                <span class="filter-dot dot-low"></span>
+                <span>Low</span>
+            </button>
+            <button type="button" class="toolbar-filter-btn" data-filter="Resolved">
+                <span class="filter-dot dot-resolved"></span>
+                <span>Resolved</span>
+            </button>
+        </div>
+
+        <!-- Search Field for Sample Locations -->
+        <div class="toolbar-search-box">
+            <i class="fa-solid fa-magnifying-glass toolbar-search-icon"></i>
+            <input 
+                type="text" 
+                id="map-search-input" 
+                class="toolbar-search-input" 
+                placeholder="Search location (e.g. Delhi, MG Road, Lodhi)..."
+                aria-label="Search sample locations"
+            >
+        </div>
+
+        <!-- Quick City Clusters Jump -->
+        <div class="toolbar-city-pills">
+            <span style="font-size: 0.72rem; color: #52525B; font-family: var(--font-mono);">JUMP:</span>
+            <button type="button" class="city-pill-btn" onclick="panToCity('Delhi')">Delhi</button>
+            <button type="button" class="city-pill-btn" onclick="panToCity('Bangalore')">Bangalore</button>
+            <button type="button" class="city-pill-btn" onclick="panToCity('Mumbai')">Mumbai</button>
+            <button type="button" class="city-pill-btn" onclick="panToCity('Pune')">Pune</button>
+        </div>
+
+    </div>
+
+    <!-- Main Map Workspace Layout -->
+    <div class="map-workspace-layout">
+        
+        <!-- Leaflet Map Container -->
+        <div id="safetyMap"></div>
+
+        <!-- Floating Button to Re-open Side Panel if Closed -->
+        <button type="button" class="panel-floating-open-btn" id="floating-panel-open-btn" onclick="toggleSidePanel()">
+            <i class="fa-solid fa-chart-pie text-warning"></i>
+            <span>Safety Stats & Safe Route</span>
+        </button>
+
+        <!-- Side Panel: Stats & Safe Route Prototype Card -->
+        <aside class="map-side-panel" id="map-side-panel">
+            
+            <div class="panel-header-bar">
+                <h2 class="panel-title">
+                    <i class="fa-solid fa-map-pin text-warning"></i>
+                    <span>Map Intelligence</span>
+                </h2>
+                <button type="button" class="panel-toggle-close-btn" onclick="toggleSidePanel()" aria-label="Close panel">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="panel-scroll-content">
+                
+                <!-- Side Panel Statistics: Total, High Risk, Resolved -->
+                <div>
+                    <div style="font-size: 0.74rem; font-family: var(--font-mono); color: #71717A; text-transform: uppercase; margin-bottom: 8px;">
+                        SAMPLE HAZARD AUDIT
+                    </div>
+                    <div class="side-stats-grid">
+                        <div class="side-stat-box">
+                            <div class="side-stat-num num-total" id="panel-stat-total">16</div>
+                            <div class="side-stat-label">Total Reports</div>
+                        </div>
+                        <div class="side-stat-box">
+                            <div class="side-stat-num num-highrisk" id="panel-stat-highrisk">6</div>
+                            <div class="side-stat-label">High Risk</div>
+                        </div>
+                        <div class="side-stat-box">
+                            <div class="side-stat-num num-resolved" id="panel-stat-resolved">4</div>
+                            <div class="side-stat-label">Resolved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                     "Safe Route" Prototype Card
+                     ========================================================== -->
+                <div class="safe-route-card">
+                    <div class="safe-route-badge">
+                        <i class="fa-solid fa-flask-vial"></i>
+                        <span>Safe Route Prototype</span>
+                    </div>
+
+                    <p style="color: #A1A1AA; font-size: 0.8rem; line-height: 1.4; margin-bottom: 12px;">
+                        PathPulse compares standard shortest paths against verified pedestrian risk heatmaps to identify safer alternatives.
+                    </p>
+
+                    <div class="route-options-container">
+                        
+                        <!-- Route 1: Shortest Route -->
+                        <div class="route-option-item route-shortest">
+                            <div class="route-option-header">
+                                <span class="route-option-title">Shortest Route</span>
+                                <span class="route-score-tag tag-unsafe">Score: 54/100</span>
+                            </div>
+                            <div class="route-metrics-row">
+                                <span><i class="fa-solid fa-person-walking"></i> 850m</span>
+                                <span><i class="fa-regular fa-clock"></i> 11 mins</span>
+                            </div>
+                            <div class="route-hazard-callout callout-danger">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>3 High-risk hazards encountered (Open Manhole, Broken Pavement)</span>
+                            </div>
+                        </div>
+
+                        <!-- Route 2: Safer Route -->
+                        <div class="route-option-item route-safer">
+                            <div class="route-option-header">
+                                <span class="route-option-title" style="color: #34D399;">
+                                    <i class="fa-solid fa-shield-check"></i> Safer Route
+                                </span>
+                                <span class="route-score-tag tag-safe">Score: 94/100</span>
+                            </div>
+                            <div class="route-metrics-row">
+                                <span style="color: #34D399;"><i class="fa-solid fa-person-walking"></i> 980m</span>
+                                <span style="color: #34D399;"><i class="fa-regular fa-clock"></i> 13 mins (+2m)</span>
+                            </div>
+                            <div class="route-hazard-callout callout-safe">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>0 Critical hazards &middot; Protected walking boulevard &middot; +40% safer</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Interactive Route Toggle on Map -->
+                    <button type="button" class="btn-toggle-route-vis" id="btn-toggle-route" onclick="toggleSafeRouteVisualization()">
+                        <i class="fa-solid fa-eye-slash"></i>
+                        <span>Hide Route Prototype from Map</span>
+                    </button>
+
+                    <div style="font-size: 0.7rem; color: #52525B; font-family: var(--font-mono); margin-top: 10px; text-align: center;">
+                        Simulated demonstration overlay for hackathon preview.
+                    </div>
+                </div>
+
+                <!-- Legend & Map Help -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 14px;">
+                    <div style="font-size: 0.72rem; font-family: var(--font-mono); color: #71717A; text-transform: uppercase; margin-bottom: 8px;">
+                        MAP LEGEND
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.78rem;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="filter-dot dot-critical"></span>
+                            <span style="color: #F87171;">Critical &mdash; Immediate Hazard (Open Manhole)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="filter-dot dot-high"></span>
+                            <span style="color: #FBBF24;">High &mdash; Severe Disruption (Broken Footpath)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="filter-dot dot-medium"></span>
+                            <span style="color: #67E8F9;">Medium &mdash; Moderate Choke Point (Pothole / Ramp)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="filter-dot dot-resolved"></span>
+                            <span style="color: #34D399;">Resolved &mdash; Fixed & Verified by Walkers</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Leaflet JS CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/map.js"></script>
+</body>
+</html>

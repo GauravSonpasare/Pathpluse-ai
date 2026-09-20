@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Dashboard - PathPulse AI</title>
+    <meta name="description" content="Manage your pedestrian hazard reports, track civic resolution progress, and monitor localized walking safety scores.">
+    
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard-custom.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body-v2">
+
+    <div class="dash-layout-container">
+        
+        <!-- Mobile Sidebar Overlay Backdrop -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- ==================================================================
+             Left Sidebar Navigation
+             ================================================================== -->
+        <aside class="dash-sidebar" id="dash-sidebar">
+            
+            <!-- Brand Logo -->
+            <a href="index.html" class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+                <div class="sidebar-brand-title">PathPulse AI</div>
+            </a>
+
+            <!-- Navigation Links -->
+            <ul class="sidebar-menu-list">
+                <li>
+                    <a href="dashboard.html" class="sidebar-menu-item active">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="report.html" class="sidebar-menu-item">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Report Hazard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="map.html" class="sidebar-menu-item">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span>Safety Map</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#recent-reports-section" class="sidebar-menu-item">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span>My Reports</span>
+                        <span class="sidebar-badge" id="sidebar-reports-count">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="profile.html" class="sidebar-menu-item">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="admin.html" class="sidebar-menu-item">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Sidebar Footer with Logout -->
+            <div class="sidebar-footer-wrap">
+                <button type="button" class="sidebar-logout-btn" onclick="handleDashboardLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ==================================================================
+             Main Content Area
+             ================================================================== -->
+        <div class="dash-main-area">
+            
+            <!-- Top Bar -->
+            <header class="dash-topbar">
+                <div class="topbar-left">
+                    <!-- Mobile Hamburger Menu Button -->
+                    <button type="button" class="mobile-nav-toggle" id="sidebarToggleBtn" aria-label="Open sidebar menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-welcome-msg" id="topbar-user-name">Welcome back, Alex</h1>
+                        <div class="topbar-welcome-sub">CITIZEN SAFETY ADVOCATE &middot; WARD 4</div>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Interactive Notification Icon & Dropdown -->
+                    <div class="notif-container">
+                        <button type="button" class="notif-btn" id="notif-btn" aria-label="View notifications">
+                            <i class="fa-regular fa-bell"></i>
+                            <span class="notif-badge-dot" id="dashboard-notif-dot"></span>
+                        </button>
+                        
+                        <!-- Notification Dropdown Panel -->
+                        <div class="notif-dropdown" id="notif-dropdown-menu">
+                            <div class="notif-header">
+                                <span class="notif-title" id="dashboard-notif-title">Notifications</span>
+                                <span style="font-size: 0.72rem; color: #F59E0B; cursor: pointer;" onclick="markAllDashboardNotificationsRead()" id="dashboard-notif-mark-all">Mark all read</span>
+                            </div>
+                            <div class="notif-list" id="dashboard-notif-list">
+                                <div class="notif-item">
+                                    <i class="fa-solid fa-triangle-exclamation" style="color: #EF4444;"></i>
+                                    <div>
+                                        <strong style="color: #FFF;">Open Manhole Verified:</strong>
+                                        <div>Civic maintenance assigned crew to Lodhi Gardens West Gate.</div>
+                                    </div>
+                                </div>
+                                <div class="notif-item">
+                                    <i class="fa-solid fa-road-barrier" style="color: #F59E0B;"></i>
+                                    <div>
+                                        <strong style="color: #FFF;">Work In Progress:</strong>
+                                        <div>Broken Footpath repairs underway at Indiranagar 100ft Road.</div>
+                                    </div>
+                                </div>
+                                <div class="notif-item">
+                                    <i class="fa-solid fa-thumbs-up" style="color: #10B981;"></i>
+                                    <div>
+                                        <strong style="color: #FFF;">5 Neighbors Confirmed:</strong>
+                                        <div>Your recent waterlogging report received verified crowd upvotes.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Avatar -->
+                    <div class="user-avatar-wrap" onclick="window.location.href='profile.html'" title="View Profile">
+                        <div class="user-avatar-circle" id="user-avatar-initials">AX</div>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: #71717A;"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content Body -->
+            <main class="dash-content-body">
+                
+                <!-- ==========================================================
+                     Hero Card: Your community safety matters.
+                     ========================================================== -->
+                <section class="dash-hero-card">
+                    <div class="dash-hero-inner">
+                        <div class="dash-hero-text-col">
+                            <div class="dash-hero-badge">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>COMMUNITY SAFETY INTELLIGENCE</span>
+                            </div>
+                            <h2 class="dash-hero-title">Your community safety matters.</h2>
+                            <p class="dash-hero-desc">
+                                Turn your daily walking observations into life-saving civic insights. Every hazard you report alerts nearby commuters and creates ranked, verified engineering tickets for municipal teams.
+                            </p>
+                        </div>
+                        <div class="dash-hero-actions">
+                            <a href="report.html" class="btn btn-primary btn-lg" id="hero-action-report-btn">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>Report a Hazard</span>
+                            </a>
+                            <a href="map.html" class="btn btn-outline btn-lg">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                                <span>Explore Safety Map</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==========================================================
+                     Statistics Cards (4 Columns)
+                     ========================================================== -->
+                <section class="dash-stats-grid" aria-label="Key hazard statistics">
+                    
+                    <!-- Stat 1: Total Reports -->
+                    <div class="dash-stat-box">
+                        <div class="dash-stat-top">
+                            <div class="dash-stat-icon stat-icon-reports">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </div>
+                            <span class="badge badge-info">All Submissions</span>
+                        </div>
+                        <div class="dash-stat-label">Total Reports</div>
+                        <div class="dash-stat-val" id="stat-total-reports">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.2rem; color: #3B82F6;"></i>
+                        </div>
+                        <div class="dash-stat-footer">
+                            <i class="fa-solid fa-cloud" style="color: #3B82F6;"></i>
+                            <span>Live from Supabase</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2: Reported -->
+                    <div class="dash-stat-box">
+                        <div class="dash-stat-top">
+                            <div class="dash-stat-icon stat-icon-reported">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </div>
+                            <span class="badge badge-info" style="color: #06B6D4; border-color: rgba(6,182,212,0.3); background: rgba(6,182,212,0.1);">Newly Logged</span>
+                        </div>
+                        <div class="dash-stat-label">Reported</div>
+                        <div class="dash-stat-val" id="stat-reported">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.2rem; color: #06B6D4;"></i>
+                        </div>
+                        <div class="dash-stat-footer">
+                            <i class="fa-solid fa-clock" style="color: #06B6D4;"></i>
+                            <span>Pending municipal triage</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3: Under Review -->
+                    <div class="dash-stat-box">
+                        <div class="dash-stat-top">
+                            <div class="dash-stat-icon stat-icon-review">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <span class="badge badge-warning">Awaiting Crew</span>
+                        </div>
+                        <div class="dash-stat-label">Under Review</div>
+                        <div class="dash-stat-val" id="stat-under-review">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.2rem; color: #F59E0B;"></i>
+                        </div>
+                        <div class="dash-stat-footer">
+                            <i class="fa-solid fa-eye" style="color: #F59E0B;"></i>
+                            <span>Assigned to Ward queue</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 4: High Risk -->
+                    <div class="dash-stat-box">
+                        <div class="dash-stat-top">
+                            <div class="dash-stat-icon stat-icon-critical">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <span class="badge badge-danger">Immediate Hazard</span>
+                        </div>
+                        <div class="dash-stat-label">High Risk</div>
+                        <div class="dash-stat-val" id="stat-high-risk">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.2rem; color: #EF4444;"></i>
+                        </div>
+                        <div class="dash-stat-footer">
+                            <i class="fa-solid fa-circle-exclamation" style="color: #EF4444;"></i>
+                            <span>High severity priority</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 5: Resolved -->
+                    <div class="dash-stat-box">
+                        <div class="dash-stat-top">
+                            <div class="dash-stat-icon stat-icon-resolved">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <span class="badge badge-success">Verified Safe</span>
+                        </div>
+                        <div class="dash-stat-label">Resolved</div>
+                        <div class="dash-stat-val" id="stat-resolved">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.2rem; color: #10B981;"></i>
+                        </div>
+                        <div class="dash-stat-footer">
+                            <i class="fa-solid fa-check-double" style="color: #10B981;"></i>
+                            <span>Civic remediation complete</span>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- ==========================================================
+                     Safety Overview Section with Chart.js
+                     ========================================================== -->
+                <section class="dash-middle-grid" aria-label="Safety analytics overview">
+                    
+                    <!-- Chart Panel -->
+                    <div class="dash-section-panel">
+                        <div class="dash-panel-header">
+                            <h3 class="dash-panel-title">
+                                <i class="fa-solid fa-chart-line" style="color: #10B981;"></i>
+                                <span>Safety Overview</span>
+                            </h3>
+                            <span style="font-size: 0.78rem; font-family: var(--font-mono); color: #71717A;">
+                                7-DAY COMMUNITY WALKING INDEX
+                            </span>
+                        </div>
+                        
+                        <div class="chart-wrapper-box">
+                            <canvas id="safetyOverviewChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Telemetry Health Breakdown -->
+                    <div class="dash-section-panel safety-index-box">
+                        <div class="dash-panel-header" style="margin-bottom: 8px;">
+                            <h3 class="dash-panel-title">
+                                <i class="fa-solid fa-microchip" style="color: #F59E0B;"></i>
+                                <span>AI Safety Index</span>
+                            </h3>
+                            <span class="badge badge-success">Active</span>
+                        </div>
+
+                        <div class="index-metric-row">
+                            <div class="index-metric-name">
+                                <i class="fa-solid fa-person-walking text-primary"></i>
+                                <span>Walking Route Safety</span>
+                            </div>
+                            <div class="index-metric-val" style="color: #10B981;">84 / 100</div>
+                        </div>
+
+                        <div class="index-metric-row">
+                            <div class="index-metric-name">
+                                <i class="fa-solid fa-stopwatch text-warning"></i>
+                                <span>Avg. Resolution Time</span>
+                            </div>
+                            <div class="index-metric-val">4.2 Days</div>
+                        </div>
+
+                        <div class="index-metric-row">
+                            <div class="index-metric-name">
+                                <i class="fa-solid fa-thumbs-up text-info"></i>
+                                <span>Community Verification</span>
+                            </div>
+                            <div class="index-metric-val" style="color: #34D399;">94.8%</div>
+                        </div>
+
+                        <div style="margin-top: auto; padding-top: 8px;">
+                            <a href="map.html" class="btn btn-outline" style="width: 100%; justify-content: center; font-size: 0.88rem;">
+                                <i class="fa-solid fa-compass"></i>
+                                <span>Navigate Safer Route</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- ==========================================================
+                     Recent Reports Section (Realistic Sample Report Cards)
+                     ========================================================== -->
+                <section class="reports-section-wrap" id="recent-reports-section">
+                    
+                    <div class="reports-header-row">
+                        <div>
+                            <h3 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
+                                Recent Reports
+                            </h3>
+                            <p style="color: #A1A1AA; font-size: 0.9rem; margin: 0;">
+                                Verified pedestrian hazard logs with automated risk scores and dispatch status.
+                            </p>
+                        </div>
+
+                        <!-- Filter Tabs & Search -->
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <div class="filter-pills-row">
+                                <button type="button" class="filter-pill-btn active" data-filter="all">All</button>
+                                <button type="button" class="filter-pill-btn" data-filter="critical">Critical & High</button>
+                                <button type="button" class="filter-pill-btn" data-filter="inprogress">In Progress</button>
+                                <button type="button" class="filter-pill-btn" data-filter="resolved">Resolved</button>
+                            </div>
+                            
+                            <div style="position: relative;">
+                                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #71717A;"></i>
+                                <input 
+                                    type="text" 
+                                    id="report-search-input"
+                                    placeholder="Search reports..." 
+                                    style="padding: 7px 12px 7px 32px; background: rgba(255,255,255,0.04); border: 1px solid var(--dash-border); border-radius: 8px; color: #FFF; font-size: 0.82rem; outline: none; width: 170px;"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Report Cards Grid -->
+                    <div class="recent-reports-grid" id="recent-reports-container">
+                        
+                        <!-- Loading State (Populated dynamically from Supabase database) -->
+                        <div class="reports-loading-skeleton" style="grid-column: 1 / -1; text-align: center; padding: 56px 20px;">
+                            <i class="fa-solid fa-circle-notch fa-spin fa-2x" style="color: #F59E0B; margin-bottom: 14px;"></i>
+                            <div style="font-size: 1.05rem; font-weight: 600; color: #FFFFFF;">Loading your reports from Supabase...</div>
+                            <div style="font-size: 0.84rem; color: #71717A; margin-top: 4px;">Retrieving verified civic safety tickets</div>
+                        </div>
+                    </div>
+
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ==================================================================
+         Interactive View Details Slide-over / Modal
+         ================================================================== -->
+    <div class="report-modal-overlay" id="report-detail-modal" role="dialog" aria-modal="true">
+        <div class="report-modal-dialog">
+            <button type="button" class="modal-close-icon" onclick="closeReportModal()" aria-label="Close modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="report-modal-content">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - PathPulse AI</title>
+    <meta name="description" content="Manage your PathPulse AI pedestrian safety profile, review incident notifications, and track civic resolution impact.">
+
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Design System Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile-custom.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="profile-body">
+
+    <div class="profile-layout">
+
+        <!-- ============================================================ -->
+        <!-- 1. SIDEBAR NAVIGATION                                       -->
+        <!-- ============================================================ -->
+        <aside class="profile-sidebar" id="profile-sidebar">
+            <div class="profile-sidebar-header">
+                <a href="index.html" class="profile-brand">
+                    <div class="profile-brand-icon">
+                        <i class="fa-solid fa-route"></i>
+                    </div>
+                    <div class="profile-brand-text">
+                        <span>PathPulse AI</span>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="profile-nav">
+                <div class="profile-nav-title">Pedestrian Console</div>
+                <a href="dashboard.html" class="profile-nav-link">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="report.html" class="profile-nav-link">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Report Hazard</span>
+                </a>
+                <a href="map.html" class="profile-nav-link">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Safety Map</span>
+                </a>
+                <a href="profile.html" class="profile-nav-link active">
+                    <i class="fa-solid fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+
+                <div class="profile-nav-title">Management</div>
+                <a href="admin.html" class="profile-nav-link">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Admin Panel</span>
+                </a>
+                <a href="report-details.html?id=RPT-1002" class="profile-nav-link">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Sample Report</span>
+                </a>
+                <a href="index.html" class="profile-nav-link" style="color: #EF4444; margin-top: auto;">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Log Out</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- ============================================================ -->
+        <!-- 2. MAIN VIEWPORT & TOPBAR                                   -->
+        <!-- ============================================================ -->
+        <main class="profile-main">
+
+            <header class="profile-topbar">
+                <div class="profile-topbar-left">
+                    <button type="button" class="mobile-menu-btn" id="btn-profile-mobile-toggle" style="display:none; background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;" aria-label="Toggle Navigation">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="profile-page-title">
+                        <i class="fa-solid fa-id-card" style="color: #F59E0B;"></i>
+                        User Profile & Activity
+                    </h1>
+                </div>
+
+                <div class="profile-topbar-right">
+                    <!-- Notifications Trigger Icon with Unread Badge -->
+                    <a href="#notification-panel-section" style="position:relative; color:#A1A1AA; font-size:1.1rem; text-decoration:none; padding:6px;" title="View Notifications">
+                        <i class="fa-solid fa-bell"></i>
+                        <span id="topbar-notif-badge" style="position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%; background:#EF4444; color:#fff; font-size:0.65rem; font-weight:700; display:flex; align-items:center; justify-content:center;">2</span>
+                    </a>
+
+                    <!-- User Pill -->
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img id="topbar-avatar-img" class="profile-top-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="User Avatar">
+                        <span id="topbar-user-name" style="font-size:0.88rem; font-weight:600; color:#FFFFFF;">Alex Morgan</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Profile Content Grid -->
+            <div class="profile-content">
+
+                <!-- ======================================================== -->
+                <!-- LEFT COLUMN: Avatar Showcase, Overview, Impact Stats     -->
+                <!-- ======================================================== -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+
+                    <!-- Profile Overview Card -->
+                    <section class="profile-card" aria-labelledby="profile-overview-heading">
+                        <div class="profile-avatar-showcase">
+                            <!-- Large Profile Picture with Camera Trigger Badge -->
+                            <div class="avatar-wrapper">
+                                <img 
+                                    id="profile-avatar-img" 
+                                    class="avatar-img-large" 
+                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" 
+                                    alt="User profile picture"
+                                >
+                                <div id="profile-avatar-fallback" class="avatar-fallback-large" style="display:none;">AM</div>
+
+                                <button type="button" class="btn-change-photo-badge btn-trigger-avatar-modal" title="Change Profile Picture">
+                                    <i class="fa-solid fa-camera"></i>
+                                </button>
+                            </div>
+
+                            <div class="profile-user-headline">
+                                <h2 id="profile-display-name">Alex Morgan</h2>
+                                <p>
+                                    <span id="profile-display-email">alex.morgan@pathpulse.ai</span>
+                                    <span class="verified-email-badge">
+                                        <i class="fa-solid fa-circle-check"></i> Verified
+                                    </span>
+                                </p>
+                                <p style="margin-top: 6px; font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:#A1A1AA;">
+                                    <i class="fa-solid fa-phone" style="font-size:0.75rem; color:#F59E0B;"></i>
+                                    <span id="profile-display-phone">+91 98765 43210</span>
+                                </p>
+                            </div>
+
+                            <!-- Button: Change Profile Picture -->
+                            <button type="button" class="btn-prof btn-prof-secondary btn-trigger-avatar-modal" style="margin-top: 8px;">
+                                <i class="fa-solid fa-image"></i>
+                                <span>Change Profile Picture</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Impact Statistics (Reports Submitted & Reports Resolved) -->
+                    <section class="profile-card" aria-labelledby="impact-heading">
+                        <div class="profile-card-header">
+                            <h2 class="profile-card-title" id="impact-heading">
+                                <i class="fa-solid fa-chart-line"></i> Civic Safety Impact
+                            </h2>
+                            <span style="font-size:0.75rem; color:#A1A1AA; font-family:'JetBrains Mono', monospace;">Community Telemetry</span>
+                        </div>
+
+                        <div class="profile-stats-row">
+                            <!-- Reports Submitted -->
+                            <div class="profile-stat-box stat-submitted">
+                                <div class="profile-stat-icon">
+                                    <i class="fa-solid fa-flag"></i>
+                                </div>
+                                <div class="profile-stat-info">
+                                    <span class="profile-stat-label">Reports Submitted</span>
+                                    <div class="profile-stat-number" id="stat-reports-submitted">14</div>
+                                </div>
+                            </div>
+
+                            <!-- Reports Resolved -->
+                            <div class="profile-stat-box stat-resolved">
+                                <div class="profile-stat-icon">
+                                    <i class="fa-solid fa-shield-check"></i>
+                                </div>
+                                <div class="profile-stat-info">
+                                    <span class="profile-stat-label">Reports Resolved</span>
+                                    <div class="profile-stat-number" id="stat-reports-resolved">9</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- ======================================================== -->
+                <!-- RIGHT COLUMN: Editable Form & Notification Panel        -->
+                <!-- ======================================================== -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+
+                    <!-- Editable Profile Information Form -->
+                    <section class="profile-card" aria-labelledby="edit-profile-heading">
+                        <div class="profile-card-header">
+                            <h2 class="profile-card-title" id="edit-profile-heading">
+                                <i class="fa-solid fa-pen-to-square"></i> Personal Information
+                            </h2>
+                            <span style="font-size:0.75rem; color:#A1A1AA; font-family:'JetBrains Mono', monospace;">
+                                LocalStorage Sync
+                            </span>
+                        </div>
+
+                        <form id="profile-edit-form" class="profile-form">
+                            <!-- Editable Field 1: Full Name -->
+                            <div class="form-group">
+                                <label for="input-full-name" class="form-label">
+                                    <span>Full Name</span>
+                                    <small>Editable</small>
+                                </label>
+                                <div class="form-input-wrap">
+                                    <i class="fa-solid fa-user form-input-icon"></i>
+                                    <input 
+                                        type="text" 
+                                        id="input-full-name" 
+                                        class="form-input" 
+                                        value="Alex Morgan" 
+                                        placeholder="Enter your full name" 
+                                        required
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Non-editable Field: Email -->
+                            <div class="form-group">
+                                <label for="input-email" class="form-label">
+                                    <span>Email Address</span>
+                                    <small>Account ID (Read-only)</small>
+                                </label>
+                                <div class="form-input-wrap">
+                                    <i class="fa-solid fa-envelope form-input-icon"></i>
+                                    <input 
+                                        type="email" 
+                                        id="input-email" 
+                                        class="form-input" 
+                                        value="alex.morgan@pathpulse.ai" 
+                                        readonly
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Editable Field 2: Phone Number -->
+                            <div class="form-group">
+                                <label for="input-phone" class="form-label">
+                                    <span>Phone Number</span>
+                                    <small>Editable</small>
+                                </label>
+                                <div class="form-input-wrap">
+                                    <i class="fa-solid fa-phone form-input-icon"></i>
+                                    <input 
+                                        type="tel" 
+                                        id="input-phone" 
+                                        class="form-input" 
+                                        value="+91 98765 43210" 
+                                        placeholder="+91 00000 00000" 
+                                        required
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Button: Save Changes -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn-prof btn-prof-primary" id="btn-save-profile">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span>Save Changes</span>
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Notification Panel -->
+                    <!-- Required Example Notifications:
+                         1. Your report has been verified.
+                         2. Your report has been assigned.
+                         3. Your report is now in progress.
+                         4. Your reported hazard has been resolved.
+                    -->
+                    <section class="profile-card notifications-panel" id="notification-panel-section" aria-labelledby="notif-heading">
+                        <div class="profile-card-header">
+                            <h2 class="profile-card-title" id="notif-heading">
+                                <i class="fa-solid fa-bell"></i> Hazard Activity Notifications
+                            </h2>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span id="notif-unread-count" style="font-size:0.75rem; color:#FBBF24; font-family:'JetBrains Mono', monospace; font-weight:600;">2 unread</span>
+                                <button type="button" class="btn-prof btn-prof-secondary" style="font-size:0.75rem; padding:4px 10px;" onclick="markAllNotificationsRead()">
+                                    <i class="fa-solid fa-check-double"></i> Mark All Read
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Notifications List Container -->
+                        <div class="notification-list" id="notifications-list-container">
+                            <!-- Populated dynamically by js/profile.js -->
+                        </div>
+                    </section>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- AVATAR SELECTION / UPLOAD MODAL                              -->
+    <!-- ============================================================ -->
+    <div class="avatar-modal" id="avatar-modal" role="dialog" aria-modal="true" aria-labelledby="avatar-modal-title">
+        <div class="avatar-modal-card">
+            <div class="avatar-modal-header">
+                <h3 class="avatar-modal-title" id="avatar-modal-title">
+                    <i class="fa-solid fa-camera" style="color:#F59E0B;"></i> Change Profile Picture
+                </h3>
+                <button type="button" class="avatar-modal-close" id="btn-close-avatar-modal" aria-label="Close avatar modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="avatar-modal-body">
+                <p style="font-size:0.85rem; color:#A1A1AA; margin:0;">
+                    Choose a preset avatar or upload a custom photo from your device. Updates persist to local storage.
+                </p>
+
+                <!-- Avatar Presets -->
+                <div style="font-size:0.78rem; font-weight:600; text-transform:uppercase; color:#71717A;">Preset Avatars:</div>
+                <div class="avatar-presets-grid">
+                    <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Avatar 1">
+                    </button>
+                    <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" alt="Avatar 2">
+                    </button>
+                    <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" alt="Avatar 3">
+                    </button>
+                    <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" alt="Avatar 4">
+                    </button>
+                </div>
+
+                <!-- Custom Photo Upload Drop Zone -->
+                <input type="file" id="avatar-file-input" accept="image/*" style="display:none;">
+                <div class="avatar-upload-zone" id="avatar-upload-zone">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <div style="font-size:0.88rem; font-weight:600; color:#FFFFFF;">Upload from your computer</div>
+                    <div style="font-size:0.75rem; color:#71717A; margin-top:4px;">JPG, PNG, or WEBP up to 5MB</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="prof-toast" id="profile-toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check prof-toast-icon"></i>
+        <div id="profile-toast-msg">Profile updated successfully!</div>
+    </div>
+
+    <!-- Supabase Client & Main Profile Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/profile.js"></script>
+
+</body>
+</html>

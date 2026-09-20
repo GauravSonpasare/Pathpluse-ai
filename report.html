@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report a Hazard - PathPulse AI</title>
+    <meta name="description" content="Report broken sidewalks, open manholes, or pedestrian hazards. Instant AI severity analysis and civic ticket generation.">
+    
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS for Map Picker -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/report.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="report-page-body">
+
+    <!-- Top Navigation Bar -->
+    <header class="report-navbar">
+        <div class="container report-nav-inner">
+            <a href="index.html" class="report-brand-logo">
+                <div class="report-brand-icon">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+                <span>PathPulse AI</span>
+            </a>
+
+            <nav class="report-nav-links">
+                <a href="index.html" class="report-nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+                <a href="dashboard.html" class="report-nav-link">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="map.html" class="report-nav-link">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Safety Map</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Wizard Container -->
+    <main class="report-main-container">
+        
+        <!-- Header Introduction -->
+        <div class="report-header-text">
+            <div class="report-header-badge">
+                <i class="fa-solid fa-bolt-lightning"></i>
+                <span>COMMUNITY HAZARD REPORTING</span>
+            </div>
+            <h1 class="report-main-title">Report a Pedestrian Hazard</h1>
+            <p class="report-main-desc">
+                Log walking hazards in seconds. Our automated scoring model calculates danger levels and alerts nearby pedestrians and municipal crews.
+            </p>
+        </div>
+
+        <!-- Progress / Stepper Navigation Indicator -->
+        <nav class="stepper-nav-wrap" aria-label="Reporting progress">
+            <div class="stepper-steps-row">
+                <button type="button" class="stepper-step active" id="step-indicator-1" onclick="document.getElementById('step-1-card').scrollIntoView({behavior: 'smooth'})">
+                    <div class="step-num-circle">1</div>
+                    <span class="step-label-text">Photo Upload</span>
+                </button>
+                <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08); margin: 0 8px;"></div>
+                <button type="button" class="stepper-step" id="step-indicator-2" onclick="document.getElementById('step-2-card').scrollIntoView({behavior: 'smooth'})">
+                    <div class="step-num-circle">2</div>
+                    <span class="step-label-text">Location</span>
+                </button>
+                <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08); margin: 0 8px;"></div>
+                <button type="button" class="stepper-step" id="step-indicator-3" onclick="document.getElementById('step-3-card').scrollIntoView({behavior: 'smooth'})">
+                    <div class="step-num-circle">3</div>
+                    <span class="step-label-text">Description</span>
+                </button>
+                <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08); margin: 0 8px;"></div>
+                <button type="button" class="stepper-step" id="step-indicator-4" onclick="document.getElementById('step-4-card').scrollIntoView({behavior: 'smooth'})">
+                    <div class="step-num-circle">4</div>
+                    <span class="step-label-text">AI Analysis</span>
+                </button>
+                <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08); margin: 0 8px;"></div>
+                <button type="button" class="stepper-step" id="step-indicator-5" onclick="document.getElementById('step-5-card').scrollIntoView({behavior: 'smooth'})">
+                    <div class="step-num-circle">5</div>
+                    <span class="step-label-text">Submit</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Validation Alert Banner -->
+        <div id="report-error-banner" class="alert alert-danger" style="display: none; margin-bottom: 20px;" role="alert"></div>
+
+        <!-- Form Wrapper -->
+        <form id="hazard-report-form" novalidate>
+
+            <!-- ==============================================================
+                 Step 1: Upload Hazard Image
+                 ============================================================== -->
+            <section class="step-card" id="step-1-card">
+                <div class="step-card-header">
+                    <h2 class="step-card-title">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>Step 1: Upload Hazard Image</span>
+                    </h2>
+                    <span class="step-badge-tag">STEP 1 OF 5</span>
+                </div>
+
+                <p style="color: #A1A1AA; font-size: 0.94rem; margin-bottom: 18px;">
+                    Capture evidence of the walking danger. You can upload a saved photo or activate your phone camera directly.
+                </p>
+
+                <!-- Hidden file inputs -->
+                <input type="file" id="file-upload" accept="image/*" style="display: none;">
+                <input type="file" id="camera-upload" accept="image/*" capture="environment" style="display: none;">
+
+                <!-- Action Buttons: Camera Capture vs File Upload -->
+                <div class="upload-options-grid">
+                    <!-- Option 1: Mobile Camera Capture -->
+                    <button type="button" class="upload-action-btn upload-btn-camera" onclick="document.getElementById('camera-upload').click()">
+                        <i class="fa-solid fa-camera-retro upload-action-icon"></i>
+                        <span class="upload-action-title">Capture with Camera</span>
+                        <span class="upload-action-sub">Opens rear camera on mobile devices</span>
+                    </button>
+
+                    <!-- Option 2: File Upload -->
+                    <button type="button" class="upload-action-btn" onclick="document.getElementById('file-upload').click()">
+                        <i class="fa-solid fa-cloud-arrow-up upload-action-icon" style="color: #06B6D4;"></i>
+                        <span class="upload-action-title">Browse Files</span>
+                        <span class="upload-action-sub">JPG, PNG, or WEBP images</span>
+                    </button>
+                </div>
+
+                <!-- Evaluator Rapid Test Button -->
+                <button type="button" class="demo-photo-trigger-btn" onclick="useSampleImage()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Use Sample Hazard Photo (Instant 1-Click Test)</span>
+                </button>
+
+                <!-- Image Preview Card with AI Scanning Laser -->
+                <div class="image-preview-card" id="image-preview-box">
+                    <div class="preview-img-container">
+                        <img src="" alt="Hazard preview" id="preview-img" class="preview-rendered-img">
+                        
+                        <!-- AI Scanning Laser Beam -->
+                        <div class="ai-scan-overlay" id="ai-scan-overlay">
+                            <div class="ai-scan-laser"></div>
+                            <div style="background: rgba(14, 14, 24, 0.9); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px 20px; text-align: center;">
+                                <i class="fa-solid fa-microchip fa-spin fa-2x text-warning" style="margin-bottom: 8px;"></i>
+                                <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #FFFFFF; font-weight: 600;">
+                                    ANALYZING HAZARD IMAGE...
+                                </div>
+                                <div style="font-size: 0.74rem; color: #A1A1AA; margin-top: 4px;">
+                                    Detecting surface defects and estimating depth metrics
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preview-meta-bar">
+                        <span class="preview-filename" id="preview-filename-text">
+                            <i class="fa-solid fa-image text-success"></i> photo_evidence.jpg
+                        </span>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeImage()" style="padding: 4px 10px; font-size: 0.78rem;">
+                            <i class="fa-solid fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==============================================================
+                 Step 2: Location
+                 ============================================================== -->
+            <section class="step-card" id="step-2-card">
+                <div class="step-card-header">
+                    <h2 class="step-card-title">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Step 2: Location</span>
+                    </h2>
+                    <span class="step-badge-tag">STEP 2 OF 5</span>
+                </div>
+
+                <!-- Geolocation Action Button -->
+                <div class="location-actions-row">
+                    <button type="button" class="btn-locate-me" id="btn-use-location">
+                        <i class="fa-solid fa-crosshairs"></i>
+                        <span>Use My Location</span>
+                    </button>
+                    <div class="geo-status-indicator" id="geo-status">
+                        <i class="fa-solid fa-circle-info"></i> Click to query browser GPS coordinates
+                    </div>
+                </div>
+
+                <!-- Latitude and Longitude Display Fields -->
+                <div class="coords-dual-grid">
+                    <div class="coords-input-box">
+                        <label class="coords-input-label" for="lat">Latitude</label>
+                        <input type="text" id="lat" name="lat" class="coords-input-field" placeholder="e.g. 12.978400" readonly required>
+                    </div>
+                    <div class="coords-input-box">
+                        <label class="coords-input-label" for="lng">Longitude</label>
+                        <input type="text" id="lng" name="lng" class="coords-input-field" placeholder="e.g. 77.640800" readonly required>
+                    </div>
+                </div>
+
+                <!-- Manual Location Field -->
+                <div style="position: relative;">
+                    <label class="coords-input-label" for="manual-address">Manual Location / Street Landmark</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-map-pin" style="position: absolute; left: 14px; top: 16px; color: #F59E0B;"></i>
+                        <input 
+                            type="text" 
+                            id="manual-address" 
+                            name="address"
+                            class="manual-location-field" 
+                            placeholder="e.g. Indiranagar 100ft Road, near Metro Station Gate 2" 
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Interactive Leaflet Map Viewport -->
+                <div id="map-picker" class="mini-map-picker"></div>
+                <div style="font-size: 0.75rem; color: #71717A; margin-top: 6px; font-family: var(--font-mono);">
+                    Tip: You can drag the pin on the map to fine-tune your exact coordinates.
+                </div>
+            </section>
+
+            <!-- ==============================================================
+                 Step 3: Description
+                 ============================================================== -->
+            <section class="step-card" id="step-3-card">
+                <div class="step-card-header">
+                    <h2 class="step-card-title">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Step 3: Description</span>
+                    </h2>
+                    <span class="step-badge-tag">STEP 3 OF 5</span>
+                </div>
+
+                <!-- Hazard Category Selection -->
+                <div style="margin-bottom: 18px;">
+                    <label for="hazard-category" style="display: block; font-weight: 500; font-size: 0.92rem; margin-bottom: 8px; color: #FFFFFF;">
+                        Hazard Category <span style="color: #EF4444;">*</span>
+                    </label>
+                    <div style="position: relative;">
+                        <select id="hazard-category" name="category" class="desc-textarea" style="height: 48px; padding: 10px 16px; border-radius: 10px; background: rgba(18, 18, 28, 0.95); color: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.12); width: 100%; font-family: inherit; font-size: 0.95rem; cursor: pointer;" required>
+                            <option value="" disabled selected>Select hazard category...</option>
+                            <option value="broken_footpath">Broken Footpath / Damaged Pavers</option>
+                            <option value="pothole">Pothole / Road Surface Defect</option>
+                            <option value="open_manhole">Open Manhole / Uncovered Drain</option>
+                            <option value="waterlogging">Waterlogging / Walkway Flooding</option>
+                            <option value="garbage">Garbage / Waste Blocking Path</option>
+                            <option value="blocked_footpath">Blocked Footpath / Obstruction</option>
+                            <option value="damaged_ramp">Damaged Wheelchair Ramp</option>
+                            <option value="fallen_object">Fallen Tree Branch / Dangerous Object</option>
+                            <option value="other">Other Walking Hazard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Report Title Field (Optional) -->
+                <div style="margin-bottom: 18px;">
+                    <label for="report-title" style="display: block; font-weight: 500; font-size: 0.92rem; margin-bottom: 8px; color: #FFFFFF;">
+                        Report Title <span style="font-size: 0.78rem; color: #71717A;">(Optional - auto-generated if left blank)</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="report-title" 
+                        name="title" 
+                        class="manual-location-field" 
+                        style="padding-left: 16px;" 
+                        placeholder="e.g. Shattered sidewalk slabs near bus stop"
+                    >
+                </div>
+
+                <label for="description" style="display: block; font-weight: 500; font-size: 0.92rem; margin-bottom: 8px; color: #FFFFFF;">
+                    What did you notice? <span style="color: #EF4444;">*</span>
+                </label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    class="desc-textarea" 
+                    placeholder="Describe what you noticed (e.g. Broken pavement slabs with jutting rebar. High trip risk near bus stop, difficult for elderly walkers)..."
+                    required
+                ></textarea>
+
+                <!-- Convenient Mobile Quick-Tap Tags -->
+                <div style="margin-top: 4px;">
+                    <div style="font-size: 0.74rem; font-family: var(--font-mono); color: #71717A; margin-bottom: 8px;">
+                        QUICK-ADD TAGS:
+                    </div>
+                    <div class="quick-tag-row">
+                        <button type="button" class="quick-tag-chip" onclick="appendQuickTag('Trip Hazard')">+ Trip Hazard</button>
+                        <button type="button" class="quick-tag-chip" onclick="appendQuickTag('Unlit at Night')">+ Unlit at Night</button>
+                        <button type="button" class="quick-tag-chip" onclick="appendQuickTag('Wheelchair Inaccessible')">+ Wheelchair Inaccessible</button>
+                        <button type="button" class="quick-tag-chip" onclick="appendQuickTag('Deep Storm Drain')">+ Deep Storm Drain</button>
+                        <button type="button" class="quick-tag-chip" onclick="appendQuickTag('Near School')">+ Near School</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==============================================================
+                 Step 4: AI Analysis Preview
+                 ============================================================== -->
+            <section class="step-card" id="step-4-card">
+                <div class="step-card-header">
+                    <h2 class="step-card-title">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>Step 4: AI Analysis Preview</span>
+                    </h2>
+                    <span class="step-badge-tag">STEP 4 OF 5</span>
+                </div>
+
+                <!-- Placeholder state before upload -->
+                <div id="ai-placeholder-msg" style="text-align: center; padding: 24px; color: #71717A; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.08);">
+                    <i class="fa-solid fa-wand-magic-sparkles fa-2x text-warning" style="margin-bottom: 10px;"></i>
+                    <p style="margin: 0; font-size: 0.9rem;">
+                        Upload a photo in Step 1 to trigger the simulated AI hazard analysis.
+                    </p>
+                </div>
+
+                <!-- Analysis Results Box -->
+                <div id="ai-results-box" class="ai-results-card" style="display: none;">
+                    
+                    <!-- Clear Prototype Demo Label -->
+                    <div class="demo-ai-badge">
+                        <i class="fa-solid fa-flask-vial"></i>
+                        <span>Demo AI Analysis</span>
+                    </div>
+
+                    <!-- Risk Gauge Highlight -->
+                    <div class="risk-gauge-row">
+                        <div>
+                            <div style="font-family: var(--font-mono); font-size: 0.74rem; color: #F87171; text-transform: uppercase;">
+                                ALGORITHMIC RISK GRADE
+                            </div>
+                            <div style="font-size: 0.84rem; color: #D4D4D8;">High fall and tripping hazard</div>
+                        </div>
+                        <div style="font-family: var(--font-heading); font-size: 1.9rem; font-weight: 700; color: #EF4444; line-height: 1;">
+                            78<span style="font-size: 0.9rem; color: #A1A1AA;">/100</span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Data Cards Grid -->
+                    <div class="ai-results-grid">
+                        <div class="ai-data-card">
+                            <div class="ai-data-label">Detected Hazard</div>
+                            <div class="ai-data-value text-warning">Broken Footpath</div>
+                        </div>
+                        <div class="ai-data-card">
+                            <div class="ai-data-label">Category</div>
+                            <div class="ai-data-value">Pedestrian Infrastructure</div>
+                        </div>
+                        <div class="ai-data-card">
+                            <div class="ai-data-label">AI Confidence</div>
+                            <div class="ai-data-value text-success">91%</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                        <span style="font-size: 0.85rem; color: #D4D4D8;">
+                            Severity Level: <strong class="text-danger">High</strong>
+                        </span>
+                        <span style="font-size: 0.78rem; font-family: var(--font-mono); color: #71717A;">
+                            Priority: Immediate Ward Queue
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==============================================================
+                 Step 5: Submit Report
+                 ============================================================== -->
+            <section class="step-card submit-step-card" id="step-5-card">
+                <div class="step-card-header" style="justify-content: center; border-bottom: none; margin-bottom: 12px;">
+                    <h2 class="step-card-title">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Step 5: Submit Report</span>
+                    </h2>
+                </div>
+
+                <p style="color: #A1A1AA; font-size: 0.95rem; max-width: 500px; margin: 0 auto 24px auto;">
+                    Review your details above and submit. Your report will generate a tracked civic ticket and alert pedestrians on the live Safety Map.
+                </p>
+
+                <!-- Primary Submit Action Button -->
+                <button type="submit" class="btn-submit-report" id="submit-report-btn">
+                    <span>Submit Report</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </section>
+
+        </form>
+
+    </main>
+
+    <!-- ==================================================================
+         Success Modal with Report ID & Navigation
+         ================================================================== -->
+    <div class="report-modal-overlay" id="report-success-modal" role="dialog" aria-modal="true">
+        <div class="report-modal-card">
+            <div class="success-icon-wrap">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <h3 style="font-family: var(--font-heading); font-size: 1.7rem; color: #FFFFFF; margin-bottom: 6px;">
+                Report Submitted Successfully!
+            </h3>
+            <p style="color: #A1A1AA; font-size: 0.92rem; line-height: 1.5; margin: 0;">
+                Your report has been logged and assigned an engineering tracking identifier.
+            </p>
+
+            <div class="report-id-highlight" id="modal-report-id-text">
+                RPT-1026
+            </div>
+
+            <div style="font-size: 0.84rem; color: #71717A; margin-bottom: 24px;">
+                Municipal maintenance crew and nearby pedestrians have been alerted.
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a href="report-details.html?id=RPT-1003" class="btn btn-primary btn-lg" id="modal-view-details-btn" style="text-decoration: none;">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>View Report Details</span>
+                </a>
+                <a href="dashboard.html" class="btn btn-outline btn-lg" style="text-decoration: none;">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Return to Dashboard</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/report.js"></script>
+</body>
+</html>
